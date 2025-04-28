@@ -28,7 +28,7 @@ public class CartService {
 
     public CartResponse createCart(CartRequest request) {
         Cart cart = new Cart();
-        cart.setUserId(request.getUserId());
+        cart.setUserId(request.getUser_id());
         cart.setCreatedAt(LocalDateTime.now());
         cart.setUpdatedAt(LocalDateTime.now());
 
@@ -80,13 +80,14 @@ public class CartService {
     private CartResponse convertToResponse(Cart cart) {
         CartResponse response = new CartResponse();
         response.setId(cart.getUuid());
-        response.setUserId(cart.getUserId());
-        response.setCompletedAt(cart.getCompletedAt());
-        response.setCreatedAt(cart.getCreatedAt());
-        response.setUpdatedAt(cart.getUpdatedAt());
+        response.setUser_id(cart.getUserId());
+        response.setCompleted_at(cart.getCompletedAt());
+        response.setCreated_at(cart.getCreatedAt());
+        response.setUpdated_at(cart.getUpdatedAt());
 
         // Get cart items
         var items = cartItemService.getItemsByCartId(cart.getUuid());
+        System.out.println(items + cart.getUuid());
         response.setCartItems(items);
 
         return response;

@@ -21,7 +21,7 @@ public class CartItemService {
     public CartItemResponse addItemToCart(CartItemRequest request) {
         // Check if item already exists in cart
         var existingItem = cartItemRepository.findByCartIdAndProductIdAndVariantIdAndDeletedAtIsNull(
-                request.getCartId(), request.getProductId(), request.getVariantId());
+                request.getCart_id(), request.getProduct_id(), request.getVariant_id());
 
         CartItem cartItem;
         if (existingItem.isPresent()) {
@@ -31,9 +31,9 @@ public class CartItemService {
         } else {
             // Create new cart item
             cartItem = new CartItem();
-            cartItem.setCartId(request.getCartId());
-            cartItem.setProductId(request.getProductId());
-            cartItem.setVariantId(request.getVariantId());
+            cartItem.setCartId(request.getCart_id());
+            cartItem.setProductId(request.getProduct_id());
+            cartItem.setVariantId(request.getVariant_id());
             cartItem.setQuantity(request.getQuantity());
             cartItem.setCreatedAt(LocalDateTime.now());
         }
@@ -80,12 +80,13 @@ public class CartItemService {
     private CartItemResponse convertToResponse(CartItem cartItem) {
         CartItemResponse response = new CartItemResponse();
         response.setId(cartItem.getUuid());
-        response.setCartId(cartItem.getCartId());
-        response.setProductId(cartItem.getProductId());
-        response.setVariantId(cartItem.getVariantId());
+        response.setCart_id(cartItem.getCartId());
+        response.setProduct_id(cartItem.getProductId());
+        response.setVariant_id(cartItem.getVariantId());
         response.setQuantity(cartItem.getQuantity());
-        response.setCreatedAt(cartItem.getCreatedAt());
-        response.setUpdatedAt(cartItem.getUpdatedAt());
+        response.setCreated_at(cartItem.getCreatedAt());
+        response.setUpdated_at(cartItem.getUpdatedAt());
+        response.setDeleted_at(cartItem.getDeletedAt());
         return response;
     }
 }

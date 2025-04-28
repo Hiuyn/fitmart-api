@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CartItemRequest {
-    private String cartId;
-    private String productId;
-    private String variantId;
+    private String cart_id;
+    private String product_id;
+    private String variant_id;
     private int quantity;
 }

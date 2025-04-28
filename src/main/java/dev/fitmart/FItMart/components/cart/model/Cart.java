@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -19,11 +20,16 @@ import java.util.*;
 public class Cart {
     @Id
     private ObjectId id;
-    private String uuid;                // FMn4k9x2r5
-    private String userId;     // 100000
-    private LocalDateTime completedAt;         // VN
-    private LocalDateTime createdAt;      // 2025-04-21T10:00:00Z
-    private LocalDateTime updatedAt;      // 2025-04-21T10:00:00Z
+    private String uuid;
+    @Field("user_id")
+    private String userId;
+    @Field("completed_at")
+    private LocalDateTime completedAt;
+    @Field("created_at")
+    private LocalDateTime createdAt;
+    @Field("updated_at")
+    private LocalDateTime updatedAt;
+    @Field("deleted_at")
     private LocalDateTime deletedAt;
     private List<CartItem> cartItems = new ArrayList<>();
 }

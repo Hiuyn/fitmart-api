@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
@@ -13,11 +14,11 @@ import java.time.LocalDateTime;
 @Builder
 public class CartItemResponse {
     private String id;
-    private String cartId;
-    private String productId;
-    private String variantId;
+    private String cart_id;
+    private String product_id;
+    private String variant_id;
     private int quantity;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
+    private LocalDateTime deleted_at;
 }

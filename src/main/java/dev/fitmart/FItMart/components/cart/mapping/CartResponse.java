@@ -14,10 +14,10 @@ import java.util.List;
 @Builder
 public class CartResponse {
     private String id;
-    private String userId;
-    private LocalDateTime completedAt;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
+    private String user_id;
+    private LocalDateTime completed_at;         // VN
+    private LocalDateTime created_at;      // 2025-04-21T10:00:00Z
+    private LocalDateTime updated_at;      // 2025-04-21T10:00:00Z
+    private LocalDateTime deleted_at;
     private List<CartItemResponse> cartItems;
 }
