@@ -28,5 +28,5 @@ public class UserModel {
     private Instant created_at;
     private Instant updated_at;
     private Instant deleted_at;
-    private List<Object> metadata;
+    private Map<String, String> metadata;
 }

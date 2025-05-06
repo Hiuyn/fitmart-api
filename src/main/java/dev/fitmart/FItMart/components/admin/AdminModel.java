@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.*;
 
 @Document(collection = "users")
 @Data
@@ -28,5 +28,5 @@ public class AdminModel {
     private Instant created_at;
     private Instant updated_at;
     private Instant deleted_at;
-    private List<Object> metadata;
+    private Map<String, String> metadata;
 }

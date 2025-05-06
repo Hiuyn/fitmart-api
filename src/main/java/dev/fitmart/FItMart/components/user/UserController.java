@@ -1,5 +1,6 @@
 package dev.fitmart.FItMart.components.user;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ public class UserController {
     // CREATE
     @PostMapping("/register")
     public UserResponse register(@RequestBody UserRequest request) {
+
+
         return userService.registerUser(request);
     }
 }

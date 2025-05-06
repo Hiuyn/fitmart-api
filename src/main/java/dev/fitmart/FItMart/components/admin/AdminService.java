@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class AdminService {
     // Create
     public AdminModel createUser(AdminModel user) {
         if (user.getMetadata() == null) {
-            user.setMetadata(new ArrayList<>());
+            user.setMetadata(new HashMap<>());
         }
         user.setUuid(UuidGenerator.generateCustomUuid());
         user.setCreated_at(Instant.now());
