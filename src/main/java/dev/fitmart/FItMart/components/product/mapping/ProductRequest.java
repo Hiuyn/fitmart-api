@@ -21,5 +21,5 @@ public class ProductRequest {
     private Manage<ProductOption> options;
 
     @Valid
-    private Manage<ProductVariant> variants;
+    private Manage<ProductVariantRequest> variants;
 }

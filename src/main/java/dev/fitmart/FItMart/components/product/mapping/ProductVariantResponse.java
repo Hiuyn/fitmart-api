@@ -1,5 +1,6 @@
 package dev.fitmart.FItMart.components.product.mapping;
 
+import dev.fitmart.FItMart.components.product.model.ProductVariant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,9 +25,8 @@ public class ProductVariantResponse {
     private Integer length;  //cm
     private Integer inventoryQuantity;
     private Boolean allowBackorder;
-    private Map<String, String> metadata;
+    private List<ProductVariant.Option> options;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
     private LocalDateTime deleted_at;
-    private List<ProductOptionValueResponse> optionValues;
 }

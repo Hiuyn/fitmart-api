@@ -17,6 +17,7 @@ public class FilterService {
 
     public <T> Page<T> applyFilter(Class<T> entityClass, String collectionName, List<Filter> filters, Pageable pageable, String q, int limit, int createdAtSort) {
         Query query = new Query();
+        query.addCriteria(Criteria.where("deletedAt").is(null));
 
         // Handle search query 'q'
         if (q != null && !q.trim().isEmpty()) {

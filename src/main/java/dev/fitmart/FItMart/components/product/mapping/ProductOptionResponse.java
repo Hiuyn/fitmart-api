@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 public class ProductOptionResponse {
     private String uuid;
     private String title;
+    private List<String> values;
     private String product_id;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;

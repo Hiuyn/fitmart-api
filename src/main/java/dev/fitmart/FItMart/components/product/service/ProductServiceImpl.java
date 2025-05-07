@@ -87,6 +87,9 @@ public class ProductServiceImpl implements ProductService{
         }
         Product product = productRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Product with UUID " + uuid + " not found"));
+        if (product.getDeletedAt() != null) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "Product not found with uuid: " + uuid);
+        }
         return convertProductToResponse(product);
     }
 
@@ -136,6 +139,7 @@ public class ProductServiceImpl implements ProductService{
         productRepository.save(product);
     }
 
+    @Override
     public ProductResponse convertProductToResponse(Product product) {
         ProductResponse response = new ProductResponse();
         response.setUuid(product.getUuid());

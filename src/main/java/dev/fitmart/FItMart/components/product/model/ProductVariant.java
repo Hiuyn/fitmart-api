@@ -34,7 +34,7 @@ public class ProductVariant {
     private Integer inventoryQuantity;
     @Field("allow_backorder")
     private Boolean allowBackorder;
-    private Map<String, String> metadata;
+    private List<Option> options;
     @Field("product_id")
     private String productId;
     @Field("created_at")
@@ -43,4 +43,10 @@ public class ProductVariant {
     private LocalDateTime updatedAt;
     @Field("deleted_at")
     private LocalDateTime deletedAt;
+
+    @Data
+    public static class Option {
+        private String id; // uuid của ProductOptionValue
+        private String value; // Giá trị như "S", "Red"
+    }
 }

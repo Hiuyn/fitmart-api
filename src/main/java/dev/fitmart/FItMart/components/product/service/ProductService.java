@@ -12,4 +12,5 @@ public interface ProductService {
     Product createProduct(Product product);
     Product updateProduct(String uuid, Product product);
     void deleteProduct(String uuid);
+    ProductResponse convertProductToResponse(Product product);
 }
