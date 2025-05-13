@@ -25,6 +25,6 @@ public class AuthenticationController {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
         final String jwtToken = jwtUtil.generateToken(userDetails);
-        return new AuthenticationResponse(request.getEmail(), jwtToken);
+        return new AuthenticationResponse(jwtToken, request.getEmail());
     }
 }

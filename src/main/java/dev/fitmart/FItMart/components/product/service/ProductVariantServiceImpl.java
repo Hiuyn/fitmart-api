@@ -54,6 +54,24 @@ public class ProductVariantServiceImpl implements ProductVariantService{
             }
         }
 
+        // Initialize prices if provided
+        if (variant.getPrices() != null && !variant.getPrices().isEmpty()) {
+            for (ProductVariant.Price price : variant.getPrices()) {
+                if (price.getId() == null) {
+                    price.setId(UuidGenerator.generateCustomUuid());
+                }
+                if (price.getCurrencyCode() == null) {
+                    price.setCurrencyCode("vnd");
+                }
+                if (price.getCreatedAt() == null) {
+                    price.setCreatedAt(LocalDateTime.now());
+                }
+                if (price.getUpdatedAt() == null) {
+                    price.setUpdatedAt(LocalDateTime.now());
+                }
+            }
+        }
+
         return productVariantRepository.save(variant);
     }
 
@@ -103,6 +121,23 @@ public class ProductVariantServiceImpl implements ProductVariantService{
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid value '" + option.getValue() + "' for option '" + productOption.getTitle() + "'");
             }
         }
+        if (variant.getPrices() != null && !variant.getPrices().isEmpty()) {
+            List<ProductVariant.Price> prices = variant.getPrices().stream()
+                    .map(priceRequest -> {
+                        ProductVariant.Price price = new ProductVariant.Price();
+                        price.setId(priceRequest.getId() != null ? priceRequest.getId() : UUID.randomUUID().toString());
+                        price.setTitle(priceRequest.getTitle());
+                        price.setCurrencyCode(priceRequest.getCurrencyCode());
+                        price.setAmount(priceRequest.getAmount());
+                        price.setCreatedAt(priceRequest.getCreatedAt() != null ? priceRequest.getCreatedAt() : LocalDateTime.now());
+                        price.setUpdatedAt(LocalDateTime.now());
+                        price.setDeletedAt(priceRequest.getDeletedAt());
+                        return price;
+                    })
+                    .collect(Collectors.toList());
+            existingVariant.setPrices(prices);
+        }
+
         existingVariant.setOptions(options);
 
         existingVariant.setUpdatedAt(LocalDateTime.now());
@@ -191,6 +226,7 @@ public class ProductVariantServiceImpl implements ProductVariantService{
         response.setAllowBackorder(variant.getAllowBackorder());
         response.setProduct_id(variant.getProductId());
         response.setOptions(variant.getOptions());
+        response.setPrices(variant.getPrices());
         response.setCreated_at(variant.getCreatedAt());
         response.setUpdated_at(variant.getUpdatedAt());
         response.setDeleted_at(variant.getDeletedAt());

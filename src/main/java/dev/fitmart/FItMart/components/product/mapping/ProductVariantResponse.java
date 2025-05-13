@@ -29,4 +29,5 @@ public class ProductVariantResponse {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
     private LocalDateTime deleted_at;
+    private List<ProductVariant.Price> prices;
 }

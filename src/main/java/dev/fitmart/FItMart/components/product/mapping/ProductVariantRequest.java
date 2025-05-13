@@ -1,8 +1,9 @@
 package dev.fitmart.FItMart.components.product.mapping;
 
+import dev.fitmart.FItMart.components.product.model.ProductVariant;
 import lombok.Data;
 
-import java.util.Map;
+import java.util.*;
 
 @Data
 public class ProductVariantRequest {
@@ -15,4 +16,5 @@ public class ProductVariantRequest {
     private Integer length;
     private Integer inventory_quantity;
     private Map<String, String> options;
+    private List<ProductVariant.Price> prices;
 }
