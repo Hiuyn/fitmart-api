@@ -1,4 +1,4 @@
-package dev.fitmart.FItMart.components.user;
+package dev.fitmart.FItMart.components.user.mapping;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
+public class RegisterRequest {
 
     private String uuid;
+
     private String user_name;
+
     private String email;
+
+    private String password;
 }

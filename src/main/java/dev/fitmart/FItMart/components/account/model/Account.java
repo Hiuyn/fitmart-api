@@ -1,20 +1,22 @@
-package dev.fitmart.FItMart.components.user;
+package dev.fitmart.FItMart.components.account.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.data.annotation.*;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
-import java.util.*;
 
-@Document(collection = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserModel {
+@Document(collection = "accounts")
+public class Account {
     @Id
     private ObjectId id;
     // Getter and Setter
@@ -23,11 +25,9 @@ public class UserModel {
     private String user_name;
     private String email;
     private String password;
-    private String role;
     private String avatar_url;
-    private List<String> permissions;
+    private String address;
     private Instant created_at;
     private Instant updated_at;
     private Instant deleted_at;
-    private Map<String, String> metadata;
 }
