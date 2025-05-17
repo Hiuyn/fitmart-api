@@ -1,5 +1,6 @@
 package dev.fitmart.FItMart.components.account.service;
 
+import dev.fitmart.FItMart.auth.AuthenticationFacade;
 import dev.fitmart.FItMart.common.model.Filter;
 import dev.fitmart.FItMart.common.model.Paginated;
 import dev.fitmart.FItMart.common.service.FilterService;
@@ -7,6 +8,7 @@ import dev.fitmart.FItMart.components.account.mapping.AccountRequest;
 import dev.fitmart.FItMart.components.account.mapping.AccountResponse;
 import dev.fitmart.FItMart.components.account.repository.AccountRepository;
 import dev.fitmart.FItMart.components.account.model.Account;
+import dev.fitmart.FItMart.components.user.UserModel;
 import dev.fitmart.FItMart.components.user.mapping.UserResponse;
 import dev.fitmart.FItMart.exception.ApiException;
 import dev.fitmart.FItMart.libs.UuidGenerator;
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService{
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final AuthenticationFacade authenticationFacade;
     @Autowired
     private FilterService filterService;
 
@@ -182,5 +184,12 @@ public class AccountServiceImpl implements AccountService{
         response.setDeleted_at(account.getDeleted_at());
 
         return response;
+    }
+
+    @Override
+    public String findByAccountId() {
+        String loggedInUserEmail  =  authenticationFacade.getAuthentication().getName();
+        Account loggedInUser = accountRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new UsernameNotFoundException("account not found"));
+        return loggedInUser.getUuid();
     }
 }

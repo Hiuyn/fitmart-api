@@ -27,4 +27,12 @@ public class AuthenticationController {
         final String jwtToken = jwtUtil.generateToken(userDetails);
         return new AuthenticationResponse(jwtToken, request.getEmail());
     }
+
+    @PostMapping("/accounts/login")
+    public AuthenticationResponse accountLogin(@RequestBody AuthenticationRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        final String jwtToken = jwtUtil.generateToken(userDetails);
+        return new AuthenticationResponse(jwtToken, request.getEmail());
+    }
 }

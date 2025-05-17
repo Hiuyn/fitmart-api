@@ -14,7 +14,7 @@ import java.util.Map;
 
 public interface AccountService {
     AccountResponse registerAccount(AccountRequest request);
-
+    String findByAccountId();
     Paginated<List<AccountResponse>> getAllAccounts(int page, int limit, Map<String, String> filters, String q, int createdAtSort);
     AccountResponse findAccountByUuid(String uuid);
     Account createAccount(Account account);
