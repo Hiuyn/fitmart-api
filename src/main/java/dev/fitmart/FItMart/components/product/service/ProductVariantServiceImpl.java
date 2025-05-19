@@ -38,6 +38,8 @@ public class ProductVariantServiceImpl implements ProductVariantService{
         variant.setUuid(UuidGenerator.generateCustomUuid());
         variant.setCreatedAt(LocalDateTime.now());
         variant.setUpdatedAt(LocalDateTime.now());
+        variant.setPrice(variant.getPrice());
+        variant.setImage(variant.getImage());
         variant.setAllowBackorder(variant.getInventoryQuantity() != null && variant.getInventoryQuantity() > 0);
 
         // Validate options
@@ -50,24 +52,6 @@ public class ProductVariantServiceImpl implements ProductVariantService{
                         .orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST, "Option with uuid '" + option.getId() + "' not found"));
                 if (!productOption.getValues().contains(option.getValue())) {
                     throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid value '" + option.getValue() + "' for option '" + productOption.getTitle() + "'");
-                }
-            }
-        }
-
-        // Initialize prices if provided
-        if (variant.getPrices() != null && !variant.getPrices().isEmpty()) {
-            for (ProductVariant.Price price : variant.getPrices()) {
-                if (price.getId() == null) {
-                    price.setId(UuidGenerator.generateCustomUuid());
-                }
-                if (price.getCurrencyCode() == null) {
-                    price.setCurrencyCode("vnd");
-                }
-                if (price.getCreatedAt() == null) {
-                    price.setCreatedAt(LocalDateTime.now());
-                }
-                if (price.getUpdatedAt() == null) {
-                    price.setUpdatedAt(LocalDateTime.now());
                 }
             }
         }
@@ -108,6 +92,9 @@ public class ProductVariantServiceImpl implements ProductVariantService{
         existingVariant.setHeight(variant.getHeight());
         existingVariant.setWidth(variant.getWidth());
         existingVariant.setLength(variant.getLength());
+
+        existingVariant.setPrice(variant.getPrice());
+        existingVariant.setImage(variant.getImage());
         existingVariant.setInventoryQuantity(variant.getInventory_quantity());
         existingVariant.setAllowBackorder(variant.getInventory_quantity() != null && variant.getInventory_quantity() > 0);
 
@@ -120,22 +107,6 @@ public class ProductVariantServiceImpl implements ProductVariantService{
             if (!productOption.getValues().contains(option.getValue())) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid value '" + option.getValue() + "' for option '" + productOption.getTitle() + "'");
             }
-        }
-        if (variant.getPrices() != null && !variant.getPrices().isEmpty()) {
-            List<ProductVariant.Price> prices = variant.getPrices().stream()
-                    .map(priceRequest -> {
-                        ProductVariant.Price price = new ProductVariant.Price();
-                        price.setId(priceRequest.getId() != null ? priceRequest.getId() : UUID.randomUUID().toString());
-                        price.setTitle(priceRequest.getTitle());
-                        price.setCurrencyCode(priceRequest.getCurrencyCode());
-                        price.setAmount(priceRequest.getAmount());
-                        price.setCreatedAt(priceRequest.getCreatedAt() != null ? priceRequest.getCreatedAt() : LocalDateTime.now());
-                        price.setUpdatedAt(LocalDateTime.now());
-                        price.setDeletedAt(priceRequest.getDeletedAt());
-                        return price;
-                    })
-                    .collect(Collectors.toList());
-            existingVariant.setPrices(prices);
         }
 
         existingVariant.setOptions(options);
@@ -226,7 +197,8 @@ public class ProductVariantServiceImpl implements ProductVariantService{
         response.setAllowBackorder(variant.getAllowBackorder());
         response.setProduct_id(variant.getProductId());
         response.setOptions(variant.getOptions());
-        response.setPrices(variant.getPrices());
+        response.setPrice(variant.getPrice());
+        response.setImage(variant.getImage());
         response.setCreated_at(variant.getCreatedAt());
         response.setUpdated_at(variant.getUpdatedAt());
         response.setDeleted_at(variant.getDeletedAt());

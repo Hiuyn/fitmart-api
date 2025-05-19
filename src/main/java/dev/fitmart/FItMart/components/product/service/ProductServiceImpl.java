@@ -3,16 +3,9 @@ package dev.fitmart.FItMart.components.product.service;
 import dev.fitmart.FItMart.common.model.Filter;
 import dev.fitmart.FItMart.common.model.Paginated;
 import dev.fitmart.FItMart.common.service.FilterService;
-import dev.fitmart.FItMart.components.product.mapping.ProductOptionResponse;
-import dev.fitmart.FItMart.components.product.mapping.ProductOptionValueResponse;
 import dev.fitmart.FItMart.components.product.mapping.ProductResponse;
-import dev.fitmart.FItMart.components.product.mapping.ProductVariantResponse;
 import dev.fitmart.FItMart.components.product.model.Product;
-import dev.fitmart.FItMart.components.product.model.ProductOption;
-import dev.fitmart.FItMart.components.product.model.ProductOptionValue;
-import dev.fitmart.FItMart.components.product.model.ProductVariant;
 import dev.fitmart.FItMart.components.product.repository.ProductOptionRepository;
-import dev.fitmart.FItMart.components.product.repository.ProductOptionValueRepository;
 import dev.fitmart.FItMart.components.product.repository.ProductRepository;
 import dev.fitmart.FItMart.components.product.repository.ProductVariantRepository;
 import dev.fitmart.FItMart.exception.ApiException;
@@ -35,12 +28,6 @@ public class ProductServiceImpl implements ProductService{
 
     @Autowired
     private ProductRepository productRepository;
-    @Autowired
-    private ProductVariantRepository productVariantRepository;
-    @Autowired
-    private ProductOptionRepository productOptionRepository;
-    @Autowired
-    private ProductOptionValueRepository productOptionValueRepository;
     @Autowired
     private FilterService filterService;
 
@@ -158,57 +145,4 @@ public class ProductServiceImpl implements ProductService{
 
         return response;
     }
-
-//    public ProductRequest convertProductToRequest(Product product) {
-//        ProductRequest request = new ProductRequest();
-//        request.setTitle(product.getTitle());
-//        request.setDescription(product.getDescription());
-//        request.setThumbnail(product.getThumbnail());
-//        request.setHandle(product.getHandle());
-//        request.setStatus(product.getStatus());
-//        request.setType(product.getType());
-//        request.setCategoryId(product.getCategoryId());
-//        request.setCollectionId(product.getCollectionId());
-//        request.setMetadata(product.getMetadata());
-//
-//        // Fetch and convert variants
-//        List<ProductVariant> variants = productVariantRepository.findByProductId(product.getUuid());
-//        List<ProductVariantRequest> variantRequests = variants.stream().map(variant -> {
-//            ProductVariantRequest varRequest = new ProductVariantRequest();
-//            varRequest.setTitle(variant.getTitle());
-//            varRequest.setSku(variant.getSku());
-//            varRequest.setBarcode(variant.getBarcode());
-//            varRequest.setWeight(variant.getWeight());
-//            varRequest.setHeight(variant.getHeight());
-//            varRequest.setWidth(variant.getWidth());
-//            varRequest.setLength(variant.getLength());
-//            varRequest.setInventoryQuantity(variant.getInventoryQuantity());
-//            varRequest.setAllowBackorder(variant.getAllowBackorder());
-//            varRequest.setMetadata(variant.getMetadata());
-//
-//            // Fetch and convert option values
-//            List<ProductOptionValue> optionValues = productOptionValueRepository.findByVariantId(variant.getUuid());
-//            List<ProductOptionValueRequest> optionValueRequests = optionValues.stream().map(ov -> {
-//                ProductOptionValueRequest ovRequest = new ProductOptionValueRequest();
-//                ovRequest.setOptionId(ov.getOptionId());
-//                ovRequest.setValue(ov.getValue());
-//                return ovRequest;
-//            }).collect(Collectors.toList());
-//            varRequest.setOptionValues(optionValueRequests);
-//
-//            return varRequest;
-//        }).collect(Collectors.toList());
-//        request.setVariants(variantRequests);
-//
-//        // Fetch and convert options
-//        List<ProductOption> options = productOptionRepository.findByProductId(product.getUuid());
-//        List<ProductOptionRequest> optionRequests = options.stream().map(option -> {
-//            ProductOptionRequest optRequest = new ProductOptionRequest();
-//            optRequest.setTitle(option.getTitle());
-//            return optRequest;
-//        }).collect(Collectors.toList());
-//        request.setOptions(optionRequests);
-//
-//        return request;
-//    }
 }

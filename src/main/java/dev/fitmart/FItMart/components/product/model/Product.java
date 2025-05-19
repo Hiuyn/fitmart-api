@@ -1,6 +1,5 @@
 package dev.fitmart.FItMart.components.product.model;
 
-import dev.fitmart.FItMart.components.cart.model.CartItem;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

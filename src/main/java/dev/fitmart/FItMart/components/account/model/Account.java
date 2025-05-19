@@ -27,6 +27,7 @@ public class Account {
     private String password;
     private String avatar_url;
     private String address;
+    private String phone;
     private Instant created_at;
     private Instant updated_at;
     private Instant deleted_at;

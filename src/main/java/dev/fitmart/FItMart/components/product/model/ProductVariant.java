@@ -35,7 +35,7 @@ public class ProductVariant {
     @Field("allow_backorder")
     private Boolean allowBackorder;
     private List<Option> options;
-    private List<Price> prices;
+    private Double price;
     @Field("product_id")
     private String productId;
     @Field("created_at")
@@ -44,25 +44,11 @@ public class ProductVariant {
     private LocalDateTime updatedAt;
     @Field("deleted_at")
     private LocalDateTime deletedAt;
+    private String image;
 
     @Data
     public static class Option {
         private String id; // uuid của ProductOptionValue
         private String value; // Giá trị như "S", "Red"
-    }
-
-    @Data
-    public static class Price {
-        private String id; // uuid của Price
-        private String title; // Ví dụ: "Retail Price", "Sale Price"
-        @Field("currency_code")
-        private String currencyCode; // Ví dụ: "usd"
-        private Double amount; // Giá tiền
-        @Field("created_at")
-        private LocalDateTime createdAt;
-        @Field("updated_at")
-        private LocalDateTime updatedAt;
-        @Field("deleted_at")
-        private LocalDateTime deletedAt;
     }
 }

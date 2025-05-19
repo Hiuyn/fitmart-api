@@ -5,10 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class CartRequest {
-    private String user_id;
+    private String variantId;
+    private Integer quantity;
+    private String paymentMethod;
 }

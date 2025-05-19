@@ -16,5 +16,6 @@ public class ProductVariantRequest {
     private Integer length;
     private Integer inventory_quantity;
     private Map<String, String> options;
-    private List<ProductVariant.Price> prices;
+    private Double price;
+    private String image;
 }

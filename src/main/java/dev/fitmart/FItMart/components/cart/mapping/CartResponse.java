@@ -1,5 +1,6 @@
 package dev.fitmart.FItMart.components.cart.mapping;
 
+import dev.fitmart.FItMart.components.cart.model.Cart;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CartResponse {
-    private String id;
-    private String user_id;
-    private LocalDateTime completed_at;         // VN
-    private LocalDateTime created_at;      // 2025-04-21T10:00:00Z
-    private LocalDateTime updated_at;      // 2025-04-21T10:00:00Z
+    private String uuid;
+    private String account_id;
+    private LocalDateTime completed_at;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
     private LocalDateTime deleted_at;
-    private List<CartItemResponse> cartItems;
+    private List<Cart.CartItem> items;
+    private String payment_method;
 }
