@@ -4,6 +4,7 @@ import dev.fitmart.FItMart.common.model.Filter;
 import dev.fitmart.FItMart.common.model.Paginated;
 import dev.fitmart.FItMart.common.service.FilterService;
 import dev.fitmart.FItMart.components.cart.model.Cart;
+import dev.fitmart.FItMart.components.order.mapping.OrderRequest;
 import dev.fitmart.FItMart.components.order.mapping.OrderResponse;
 import dev.fitmart.FItMart.components.order.model.Order;
 import dev.fitmart.FItMart.components.order.repository.OrderRepository;
@@ -103,15 +104,15 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public OrderResponse updateOrderStatus(String uuid, int newStatus) {
+    public OrderResponse updateOrderStatus(String uuid, OrderRequest orderRequest) {
         Order order = orderRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Order not found"));
 
-        order.setStatus(newStatus);
-        order.setStatusTxt(Order.getStatusText(newStatus));
+        order.setStatus(orderRequest.getStatus());
+        order.setStatusTxt(Order.getStatusText(orderRequest.getStatus()));
         order.setUpdatedAt(LocalDateTime.now());
 
-        if (newStatus == 5) {
+        if (orderRequest.getStatus() == 5 || orderRequest.getStatus() == 99) {
             order.setCompletedAt(LocalDateTime.now());
         }
 

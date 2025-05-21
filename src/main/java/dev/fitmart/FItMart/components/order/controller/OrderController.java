@@ -1,6 +1,7 @@
 package dev.fitmart.FItMart.components.order.controller;
 
 import dev.fitmart.FItMart.common.model.Paginated;
+import dev.fitmart.FItMart.components.order.mapping.OrderRequest;
 import dev.fitmart.FItMart.components.order.mapping.OrderResponse;
 import dev.fitmart.FItMart.components.order.service.OrderService;
 import dev.fitmart.FItMart.components.product.mapping.ProductResponse;
@@ -57,15 +58,16 @@ public class OrderController {
     // ✅ Lấy chi tiết đơn hàng theo UUID
     @GetMapping("/{uuid}")
     public ResponseEntity<ApiResponse<OrderResponse>> getOrder(@PathVariable String uuid) {
-        return ResponseUtils.success(orderService.getOrder(uuid));
+        OrderResponse response = orderService.getOrder(uuid);
+        return ResponseUtils.success(response);
     }
 
     // ✅ Cập nhật trạng thái đơn hàng
     @PutMapping("/{uuid}/status")
     public ResponseEntity<ApiResponse<OrderResponse>> updateStatus(
             @PathVariable String uuid,
-            @RequestParam int status
+            @RequestBody OrderRequest request
     ) {
-        return ResponseUtils.success(orderService.updateOrderStatus(uuid, status));
+        return ResponseUtils.success(orderService.updateOrderStatus(uuid, request));
     }
 }
