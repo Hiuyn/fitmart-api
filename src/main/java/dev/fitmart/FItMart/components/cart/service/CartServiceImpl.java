@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -86,6 +88,7 @@ public class CartServiceImpl implements CartService{
                     .variant(product)
                     .quantity(request.getQuantity())
                     .price(request.getQuantity() * product.getPrice())
+                    .is_check(1)
                     .build();
             cart.getItems().add(item);
         }
@@ -110,6 +113,7 @@ public class CartServiceImpl implements CartService{
                 throw new ApiException(HttpStatus.BAD_REQUEST, "quantity must be greater than 0");
             }
             item.setQuantity(request.getQuantity());
+            item.setIs_check(request.getIs_check());
             item.setPrice(request.getQuantity() * product.getPrice());
         }
 
@@ -156,10 +160,17 @@ public class CartServiceImpl implements CartService{
         if (!accountService.findAccountByUuid(accountId).getUuid().equals(accountId)) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid account information");
         }
+        List<Cart.CartItem> selectedItems = cart.getItems().stream()
+                .filter(item -> item.getIs_check() == 1)
+                .collect(Collectors.toList());
 
-        OrderResponse order = orderService.createOrder(cart);
+        if (selectedItems.isEmpty()) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Không có món hàng nào trong giỏ hàng");
+        }
 
-        cart.setItems(new ArrayList<>());
+        OrderResponse order = orderService.createOrder(cart, selectedItems);
+
+        cart.getItems().removeAll(selectedItems);
         cart.setPaymentMethod("");
         cart.setUpdatedAt(LocalDateTime.now());
         cartRepository.save(cart);

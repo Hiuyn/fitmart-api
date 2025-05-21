@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CartItemRequest {
     private Integer quantity;
+    private int is_check;
 }

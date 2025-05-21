@@ -35,15 +35,22 @@ public class OrderServiceImpl implements OrderService{
     private FilterService filterService;
 
     @Override
-    public OrderResponse createOrder(Cart cart) {
+    public OrderResponse createOrder(Cart cart, List<Cart.CartItem> items) {
+        if (items == null || items.isEmpty()) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "No items provided for order");
+        }
+        if (cart.getPaymentMethod() == null || cart.getPaymentMethod().isEmpty()) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Payment method is required");
+        }
+
         Order order = Order.builder()
                 .uuid(UuidGenerator.generateCustomUuid())
                 .accountId(cart.getAccountId())
                 .paymentMethod(cart.getPaymentMethod())
-                .totalFee(cart.getItems().stream()
+                .totalFee(items.stream()
                         .mapToLong(item -> item.getPrice())
                         .sum())
-                .items(cart.getItems())
+                .items(items)
                 .status(1)
                 .statusTxt(Order.getStatusText(1))
                 .createdAt(LocalDateTime.now())

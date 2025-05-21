@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface OrderService {
-    OrderResponse createOrder(Cart cart);
+    OrderResponse createOrder(Cart cart, List<Cart.CartItem> items);
     Paginated<List<OrderResponse>> getAllOrders(int page, int limit, Map<String, String> filters, String q, int createdAtSort);
     OrderResponse getOrder(String uuid);
     OrderResponse updateOrderStatus(String uuid, OrderRequest orderRequest);
