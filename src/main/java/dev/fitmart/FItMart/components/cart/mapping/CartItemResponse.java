@@ -14,9 +14,10 @@ import java.time.LocalDateTime;
 @Builder
 public class CartItemResponse {
     private String id;
-    private String cartId;
-    private String variantId;
+    private String cart_id;
+    private String variant_id;
     private int quantity;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
+    private Long price;
 }

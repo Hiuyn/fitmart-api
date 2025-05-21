@@ -35,7 +35,7 @@ public class ProductVariant {
     @Field("allow_backorder")
     private Boolean allowBackorder;
     private List<Option> options;
-    private Double price;
+    private Long price;
     @Field("product_id")
     private String productId;
     @Field("created_at")

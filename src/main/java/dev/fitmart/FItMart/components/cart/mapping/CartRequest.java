@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CartRequest {
-    private String variantId;
+    private String variant_id;
     private Integer quantity;
-    private String paymentMethod;
+    private String payment_method;
 }

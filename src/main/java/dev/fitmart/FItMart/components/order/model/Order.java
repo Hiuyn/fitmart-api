@@ -28,13 +28,11 @@ public class Order {
     @Field("payment_method")
     private String paymentMethod;
     @Field("total_fee")
-    private Double totalFee;
-    @Field("packaging_status")
-    private int packagingStatus; // 0: PENDING_PACKAGING, 1: PACKAGED
-    @Field("shipping_status")
-    private int shippingStatus; // 0: PENDING_SHIPPING, 1: SHIPPING
-    @Field("payment_status")
-    private int paymentStatus; // 0: UNPAID, 1: PAID
+    private Long totalFee;
+    @Field("status")
+    private int status; // 1-99 (see below)
+    @Field("status_txt")
+    private String statusTxt;
     @Field("completed_at")
     private LocalDateTime completedAt;
     @Field("created_at")
@@ -43,4 +41,16 @@ public class Order {
     private LocalDateTime updatedAt;
     @Field("deleted_at")
     private LocalDateTime deletedAt;
+
+    public static String getStatusText(int status) {
+        return switch (status) {
+            case 1 -> "Đang chờ đóng hàng";
+            case 2 -> "Đang chờ giao hàng";
+            case 3 -> "Đang giao hàng";
+            case 4 -> "Đang chờ thanh toán";
+            case 5 -> "Đã thanh toán";
+            case 99 -> "Đã huỷ";
+            default -> "unknown";
+        };
+    }
 }

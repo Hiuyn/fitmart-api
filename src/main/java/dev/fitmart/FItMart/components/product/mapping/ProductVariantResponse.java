@@ -29,6 +29,6 @@ public class ProductVariantResponse {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
     private LocalDateTime deleted_at;
-    private Double price;
+    private Long price;
     private String image;
 }

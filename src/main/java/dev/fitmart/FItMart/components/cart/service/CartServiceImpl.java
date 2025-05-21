@@ -11,6 +11,10 @@ import dev.fitmart.FItMart.components.cart.repository.CartRepository;
 import dev.fitmart.FItMart.components.order.mapping.OrderResponse;
 import dev.fitmart.FItMart.components.order.model.Order;
 import dev.fitmart.FItMart.components.order.repository.OrderRepository;
+import dev.fitmart.FItMart.components.order.service.OrderService;
+import dev.fitmart.FItMart.components.product.mapping.ProductVariantResponse;
+import dev.fitmart.FItMart.components.product.model.ProductVariant;
+import dev.fitmart.FItMart.components.product.service.ProductVariantService;
 import dev.fitmart.FItMart.exception.ApiException;
 import dev.fitmart.FItMart.libs.UuidGenerator;
 import lombok.AllArgsConstructor;
@@ -25,16 +29,17 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CartServiceImpl implements CartService{
     private final CartRepository cartRepository;
-    private final OrderRepository orderRepository;
     private final AuthenticationFacade authenticationFacade;
     private final AccountService accountService;
+    private final OrderService orderService;
+    private final ProductVariantService productVariantService;
 
     @Override
     public CartResponse createCart() {
         String accountId = accountService.findByAccountId();
 
         // Check if there's an existing draft cart
-        Optional<Cart> existingCart = cartRepository.findByAccountId(accountId);
+        Optional<Cart> existingCart = cartRepository.findFirstByAccountId(accountId);
         if (existingCart.isPresent()) {
             return convertToResponse(existingCart.get());
         }
@@ -45,7 +50,6 @@ public class CartServiceImpl implements CartService{
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .deletedAt(null)
-                .completedAt(null)
                 .paymentMethod("")
                 .items(new java.util.ArrayList<>())
                 .build();
@@ -58,25 +62,30 @@ public class CartServiceImpl implements CartService{
     public CartResponse addLineItem(String cartId, CartRequest request) {
         Cart cart = validateCart(cartId);
 
-        if (request.getVariantId() == null) {
+        if (request.getVariant_id() == null) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "variant_id is required");
         }
         if (request.getQuantity() == null || request.getQuantity() <= 0) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "quantity must be greater than 0");
         }
 
+        ProductVariantResponse product = productVariantService.getOneVariant(request.getVariant_id());
+
         Optional<Cart.CartItem> existingItem = cart.getItems().stream()
-                .filter(item -> item.getVariant_id().equals(request.getVariantId()))
+                .filter(item -> item.getVariant_id().equals(request.getVariant_id()))
                 .findFirst();
 
         if (existingItem.isPresent()) {
             Cart.CartItem item = existingItem.get();
             item.setQuantity(item.getQuantity() + request.getQuantity());
+            item.setPrice(item.getQuantity() * product.getPrice());
         } else {
             Cart.CartItem item = Cart.CartItem.builder()
                     .uuid(UuidGenerator.generateCustomUuid())
-                    .variant_id(request.getVariantId())
+                    .variant_id(request.getVariant_id())
+                    .variant(product)
                     .quantity(request.getQuantity())
+                    .price(request.getQuantity() * product.getPrice())
                     .build();
             cart.getItems().add(item);
         }
@@ -95,12 +104,13 @@ public class CartServiceImpl implements CartService{
                 .filter(i -> i.getUuid().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Cart item not found: " + itemId));
-
+        ProductVariantResponse product = productVariantService.getOneVariant(item.getVariant_id());
         if (request.getQuantity() != null) {
             if (request.getQuantity() <= 0) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "quantity must be greater than 0");
             }
             item.setQuantity(request.getQuantity());
+            item.setPrice(request.getQuantity() * product.getPrice());
         }
 
         cart.setUpdatedAt(LocalDateTime.now());
@@ -125,11 +135,11 @@ public class CartServiceImpl implements CartService{
     @Override
     public CartResponse selectPaymentMethod(String cartId, CartRequest request) {
         Cart cart = validateCart(cartId);
-        if (request.getPaymentMethod() == null) {
+        if (request.getPayment_method() == null) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Payment method is required");
         }
 
-        cart.setPaymentMethod(request.getPaymentMethod());
+        cart.setPaymentMethod(request.getPayment_method());
         cart.setUpdatedAt(LocalDateTime.now());
         cart = cartRepository.save(cart);
         return convertToResponse(cart);
@@ -147,32 +157,19 @@ public class CartServiceImpl implements CartService{
             throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid account information");
         }
 
-        Order order = Order.builder()
-                .uuid(UuidGenerator.generateCustomUuid())
-                .accountId(cart.getAccountId())
-                .items(cart.getItems().stream().toList())
-                .paymentMethod(cart.getPaymentMethod())
-                .packagingStatus(0)
-                .shippingStatus(0)
-                .paymentStatus(0)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .deletedAt(null)
-                .completedAt(null)
-                .build();
+        OrderResponse order = orderService.createOrder(cart);
 
-        order = orderRepository.save(order);
         cart.setItems(new ArrayList<>());
+        cart.setPaymentMethod("");
         cart.setUpdatedAt(LocalDateTime.now());
-        cart = cartRepository.save(cart);
-        return convertToOrderResponse(order);
+        cartRepository.save(cart);
+        return order;
     }
 
     private CartResponse convertToResponse(Cart cart) {
         return CartResponse.builder()
                 .uuid(cart.getUuid())
                 .account_id(cart.getAccountId())
-                .completed_at(cart.getCompletedAt())
                 .created_at(cart.getCreatedAt())
                 .updated_at(cart.getUpdatedAt())
                 .deleted_at(cart.getDeletedAt())
@@ -184,35 +181,18 @@ public class CartServiceImpl implements CartService{
     private CartItemResponse convertToCartItemResponse(Cart.CartItem item) {
         return CartItemResponse.builder()
                 .id(item.getUuid())
-                .variantId(item.getVariant_id())
+                .variant_id(item.getVariant_id())
                 .quantity(item.getQuantity())
                 .build();
     }
 
     private Cart validateCart(String cartId) {
         String accountId = accountService.findByAccountId();
-        Cart existingCart = cartRepository.findByAccountId(accountId)
+        Cart existingCart = cartRepository.findFirstByAccountId(accountId)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Cart not found: " + cartId));
         if (!existingCart.getAccountId().equals(accountId)) {
             throw new ApiException(HttpStatus.FORBIDDEN, "You can only access your own cart");
         }
-        if (existingCart.getCompletedAt() != null) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Cart is already completed");
-        }
         return existingCart;
-    }
-
-    private OrderResponse convertToOrderResponse(Order order) {
-        return OrderResponse.builder()
-                .uuid(order.getUuid())
-                .accountId(order.getAccountId())
-                .items(order.getItems())
-                .paymentMethod(order.getPaymentMethod())
-                .paymentStatus(order.getPaymentStatus())
-                .packagingStatus(order.getPackagingStatus())
-                .shippingStatus(order.getShippingStatus())
-                .createdAt(order.getCreatedAt())
-                .updatedAt(order.getUpdatedAt())
-                .build();
     }
 }

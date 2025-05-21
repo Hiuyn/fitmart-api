@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface CartRepository extends MongoRepository<Cart, String> {
     @Query("{ 'uuid' : ?0, 'deleted_at' : null }")
     Optional<Cart> findByUuid(String uuid);
-    @Query("{ 'account_id' : ?0, 'is_draft' : 1, 'completed_at' : null, 'deleted_at' : null }")
-    Optional<Cart> findByAccountId(String accountId);
+    @Query("{ 'account_id' : ?0 }")
+    Optional<Cart>  findFirstByAccountId(String accountId);
 }

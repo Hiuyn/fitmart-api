@@ -15,13 +15,14 @@ import java.util.List;
 @Builder
 public class OrderResponse {
     private String uuid;
-    private String accountId;
+    private String account_id;
     private List<Cart.CartItem> items;
-    private String paymentMethod;
-    private int packagingStatus;
-    private int shippingStatus;
-    private int paymentStatus;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private Double total_fee;
+    private String payment_method;
+    private int status;
+    private String status_txt;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
+    private LocalDateTime deleted_at;
+    private LocalDateTime completed_at;
+    private Long total_fee;
 }

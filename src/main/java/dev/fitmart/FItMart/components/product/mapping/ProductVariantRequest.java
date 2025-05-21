@@ -16,6 +16,6 @@ public class ProductVariantRequest {
     private Integer length;
     private Integer inventory_quantity;
     private Map<String, String> options;
-    private Double price;
+    private Long price;
     private String image;
 }

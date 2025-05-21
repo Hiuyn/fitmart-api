@@ -1,5 +1,7 @@
 package dev.fitmart.FItMart.components.cart.model;
 
+import dev.fitmart.FItMart.components.product.mapping.ProductVariantResponse;
+import dev.fitmart.FItMart.components.product.model.ProductVariant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,8 +25,6 @@ public class Cart {
     private String uuid;
     @Field("account_id")
     private String accountId;
-    @Field("completed_at")
-    private LocalDateTime completedAt;
     @Field("created_at")
     private LocalDateTime createdAt;
     @Field("updated_at")
@@ -40,6 +40,8 @@ public class Cart {
     public static class CartItem {
         private String uuid;
         private String variant_id;
+        private ProductVariantResponse variant;
         private int quantity;
+        private Long price;
     }
 }
