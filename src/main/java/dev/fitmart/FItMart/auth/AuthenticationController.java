@@ -1,6 +1,7 @@
 package dev.fitmart.FItMart.auth;
 
 import dev.fitmart.FItMart.util.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +22,7 @@ public class AuthenticationController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody AuthenticationRequest request) {
+    public AuthenticationResponse login(@Valid @RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
         final String jwtToken = jwtUtil.generateToken(userDetails);
@@ -29,7 +30,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/accounts/login")
-    public AuthenticationResponse accountLogin(@RequestBody AuthenticationRequest request) {
+    public AuthenticationResponse accountLogin(@Valid @RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
         final String jwtToken = jwtUtil.generateToken(userDetails);
