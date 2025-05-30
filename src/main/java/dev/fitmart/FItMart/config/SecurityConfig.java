@@ -5,6 +5,7 @@ import dev.fitmart.FItMart.filters.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -36,6 +37,17 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/register", "/api/v1/login", "/api/v1/check-admin", "/api/v1/accounts/register", "/api/v1/accounts/login").permitAll()
+                        // Các API cho ROLE_ACCOUNT chỉ được GET
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**").hasAnyRole("ACCOUNT", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/orders/**").hasAnyRole("ACCOUNT", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/product_categories/**").hasAnyRole("ACCOUNT", "ADMIN")
+
+                        // Các method khác (POST, PUT, DELETE) chỉ cho ADMIN
+                        .requestMatchers("/api/v1/products/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/orders/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/product_categories/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/permissions/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

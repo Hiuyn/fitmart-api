@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -30,6 +31,7 @@ public class ProductController {
     @Autowired
     private ProductVariantService productVariantService;
 
+    @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping
     public ResponseEntity<ApiResponse<Paginated<List<ProductResponse>>>> getAllProducts(
             @RequestParam(defaultValue = "1") int page,
@@ -62,12 +64,15 @@ public class ProductController {
         Paginated<List<ProductResponse>> response = productService.getAllProducts(page, limit, filters, q, createdAtSort);
         return ResponseUtils.success(response);
     }
+
+    @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}")
     public ResponseEntity<ApiResponse<ProductResponse>> getProductByUuid(@PathVariable String uuid) {
         ProductResponse productResponse = productService.findProductByUuid(uuid);
         return ResponseUtils.success(productResponse);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest) {
         // Tạo sản phẩm
@@ -151,6 +156,7 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{uuid}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable String uuid, @Valid @RequestBody ProductRequest productRequest) {
         // Cập nhật sản phẩm
@@ -301,6 +307,7 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String uuid, @RequestBody(required = false) ProductRequest productRequest) {
         // Xóa sản phẩm (soft delete)
@@ -323,6 +330,7 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}/options")
     public ResponseEntity<ApiResponse<Paginated<List<ProductOptionResponse>>>> getOptionsByProductUuid(
             @RequestParam(defaultValue = "1") int page,
@@ -356,6 +364,7 @@ public class ProductController {
         return ResponseUtils.success(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}/variants")
     public ResponseEntity<ApiResponse<Paginated<List<ProductVariantResponse>>>> getVariantsByProductUuid(
             @RequestParam(defaultValue = "1") int page,
