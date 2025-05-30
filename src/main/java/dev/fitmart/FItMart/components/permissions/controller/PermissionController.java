@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -22,18 +23,21 @@ public class PermissionController {
 
     private final PermissionService permissionService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PermissionResponse> createPermission(@Valid @RequestBody PermissionRequest request) {
         PermissionResponse response = permissionService.createPermission(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<PermissionResponse> getPermission(@PathVariable String id) {
         PermissionResponse response = permissionService.getPermission(id);
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<Paginated<List<PermissionResponse>>> getAllPermissions(
             @RequestParam(defaultValue = "1") int page,
@@ -67,12 +71,14 @@ public class PermissionController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PermissionResponse> updatePermission(@PathVariable String id, @Valid @RequestBody PermissionRequest request) {
         PermissionResponse response = permissionService.updatePermission(id, request);
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePermission(@PathVariable String id) {
         permissionService.deletePermission(id);

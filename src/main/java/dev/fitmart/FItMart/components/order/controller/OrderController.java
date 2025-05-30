@@ -9,6 +9,7 @@ import dev.fitmart.FItMart.exception.ApiResponse;
 import dev.fitmart.FItMart.exception.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class OrderController {
     private OrderService orderService;
 
     // ✅ Lấy tất cả đơn hàng
+    @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping
     public ResponseEntity<ApiResponse<Paginated<List<OrderResponse>>>> getAllOrders(
             @RequestParam(defaultValue = "1") int page,
@@ -56,12 +58,14 @@ public class OrderController {
     }
 
     // ✅ Lấy chi tiết đơn hàng theo UUID
+    @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}")
     public ResponseEntity<ApiResponse<OrderResponse>> getOrder(@PathVariable String uuid) {
         OrderResponse response = orderService.getOrder(uuid);
         return ResponseUtils.success(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     // ✅ Cập nhật trạng thái đơn hàng
     @PutMapping("/{uuid}/status")
     public ResponseEntity<ApiResponse<OrderResponse>> updateStatus(

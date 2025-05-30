@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ import java.util.stream.Collectors;
 public class ProductCategoryController {
     @Autowired
     private ProductCategoryService productCategoryService;
-    
+
+    @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping
     public ResponseEntity<ApiResponse<Paginated<List<ProductCategoryResponse>>>> getAllProducts(
             @RequestParam(defaultValue = "1") int page,
@@ -58,28 +60,34 @@ public class ProductCategoryController {
         Paginated<List<ProductCategoryResponse>> response = productCategoryService.getAllProductCategories(page, limit, filters, q, createdAtSort);
         return ResponseUtils.success(response);
     }
+
+    @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}")
     public ResponseEntity<ApiResponse<ProductCategoryResponse>> getProductByUuid(@PathVariable String uuid) {
         ProductCategoryResponse ProductCategoryResponse = productCategoryService.findProductCategoryByUuid(uuid);
         return ResponseUtils.success(ProductCategoryResponse);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse<ProductCategory>> createProductCategory(@Valid @RequestBody ProductCategoryRequest productRequest) {
         return ResponseUtils.success(productCategoryService.createProductCategory(productRequest));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{uuid}")
     public ResponseEntity<ApiResponse<ProductCategory>> updateProductCategory(@PathVariable String uuid, @Valid @RequestBody ProductCategoryRequest productRequest) {
         return ResponseUtils.success(productCategoryService.updateProductCategory(uuid, productRequest));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Void> deleteProductCategory(@PathVariable String uuid) {
         productCategoryService.deleteProductCategory(uuid);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{uuid}/products")
     public ResponseEntity<ProductCategoryResponse> manageProductsForCategory(
             @PathVariable String uuid,
