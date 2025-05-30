@@ -1,8 +1,6 @@
 package dev.fitmart.FItMart.components.product.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,12 +22,16 @@ public class Product {
     @Id
     private ObjectId id;
     private String uuid;
+    @NotBlank(message = "Title không được trống")
+    @Size(min = 2, max = 100, message = "Title phải nằm trong khoảng từ 2 đến 100 ký tự")
     private String title;
     private String description;
     private String thumbnail;
-    @NotNull
-    @NotEmpty
-    @NotBlank(message = "Slug is required")
+    @NotBlank(message = "SKU không được trống")
+    @Pattern(
+            regexp = "^[a-z0-9]+(-[a-z0-9]+)*$",
+            message = "SKU chỉ được chứa chữ thường và số, cách nhau bằng dấu gạch ngang, không dấu tiếng Việt"
+    )
     private String slug;
     private String status;
     private String type;

@@ -2,6 +2,8 @@ package dev.fitmart.FItMart.components.product.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +25,9 @@ public class ProductOption {
     @Id
     private ObjectId id;
     private String uuid;
-    @NotBlank(message = "Title is required")
+    @NotBlank(message = "Title không được trống")
+    @Size(min = 2, max = 100, message = "Title phải nằm trong khoảng từ 2 đến 100 ký tự")
     private String title;
-    @NotEmpty(message = "Values are required")
     private List<String> values;
     @Field("product_id")
     private String productId;

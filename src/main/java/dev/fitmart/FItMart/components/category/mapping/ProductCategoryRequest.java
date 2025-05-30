@@ -8,13 +8,9 @@ import lombok.Data;
 
 @Data
 public class ProductCategoryRequest {
-    @NotEmpty
-    @NotNull
-    @NotBlank(message = "Title must not be blank")
+    @NotBlank(message = "Title không đuọc trống")
     private String title;
-    @NotEmpty
-    @NotNull
-    @NotBlank(message = "Handle must not be blank")
+    @NotBlank(message = "Handle không đuọc trống")
     private String handle;
     private String description;
     private int rank;
