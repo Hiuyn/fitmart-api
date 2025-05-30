@@ -78,12 +78,11 @@ public class PermissionServiceImpl implements PermissionService {
             filterCriteria.add(criteria);
         }
 
-        Page<Permission> permissionPage = filterService.applyFilter(Permission.class, "permisions", filterCriteria, pageable, q, limit, createdAtSort);
+        Page<Permission> permissionPage = filterService.applyFilter(Permission.class, "permissions", filterCriteria, pageable, q, limit, createdAtSort);
 
         List<PermissionResponse> permissionResponses = permissionPage.getContent().stream()
                 .map(this::convertPermissionToResponse)
                 .collect(Collectors.toList());
-
         Paginated<List<PermissionResponse>> response = new Paginated<>();
         response.setData(permissionResponses);
 
