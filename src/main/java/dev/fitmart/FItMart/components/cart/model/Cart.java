@@ -43,6 +43,6 @@ public class Cart {
         private ProductVariantResponse variant;
         private int quantity;
         private Long price;
-        private int is_check; // 0: false, 1: true
+        private Boolean is_check; // 0: false, 1: true
     }
 }

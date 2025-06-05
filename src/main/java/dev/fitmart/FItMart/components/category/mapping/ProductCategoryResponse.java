@@ -21,10 +21,10 @@ public class ProductCategoryResponse {
     private String description;
     private String handle;
     private int rank;
-    private int is_active;
+    private Boolean is_active;
     private List<Product> products;
     private String parent_category_id;
-    private int has_child;
+    private Boolean has_child;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
     private LocalDateTime deleted_at;

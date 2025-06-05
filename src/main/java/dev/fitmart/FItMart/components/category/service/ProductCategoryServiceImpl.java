@@ -108,10 +108,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService{
             Optional<ProductCategory> parentCategoryOpt = productCategoryRepository.findByUuid(parentCategoryId);
             if (parentCategoryOpt.isPresent()) {
                 productCategory.setParent_category_id(parentCategoryId);
-                productCategory.setHas_child(1);
+                productCategory.setHas_child(true);
             } else {
                 productCategory.setParent_category_id(""); // hoặc null tùy vào định nghĩa DB
-                productCategory.setHas_child(0); // object rỗng
+                productCategory.setHas_child(false); // object rỗng
             }
         }
 
@@ -143,10 +143,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService{
             Optional<ProductCategory> parentCategoryOpt = productCategoryRepository.findByUuid(parentCategoryId);
             if (parentCategoryOpt.isPresent()) {
                 existingProduct.setParent_category_id(parentCategoryId);
-                existingProduct.setHas_child(1);
+                existingProduct.setHas_child(true);
             } else {
                 existingProduct.setParent_category_id(""); // hoặc null tùy vào định nghĩa DB
-                existingProduct.setHas_child(0); // object rỗng
+                existingProduct.setHas_child(false); // object rỗng
             }
         }
 

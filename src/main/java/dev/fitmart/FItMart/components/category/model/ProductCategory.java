@@ -31,10 +31,10 @@ public class ProductCategory {
     private String description;
     private int rank;
     @Field("is_active")
-    private int isActive;
+    private Boolean isActive;
     private List<Product> products;
     private String parent_category_id;
-    private int has_child; // 0: false, 1: true
+    private Boolean has_child; // 0: false, 1: true
     @Field("created_at")
     private LocalDateTime createdAt;
     @Field("updated_at")

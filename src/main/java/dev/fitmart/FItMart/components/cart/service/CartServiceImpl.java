@@ -88,7 +88,7 @@ public class CartServiceImpl implements CartService{
                     .variant(product)
                     .quantity(request.getQuantity())
                     .price(request.getQuantity() * product.getPrice())
-                    .is_check(1)
+                    .is_check(true)
                     .build();
             cart.getItems().add(item);
         }
@@ -161,7 +161,7 @@ public class CartServiceImpl implements CartService{
             throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid account information");
         }
         List<Cart.CartItem> selectedItems = cart.getItems().stream()
-                .filter(item -> item.getIs_check() == 1)
+                .filter(item -> item.getIs_check() == true)
                 .collect(Collectors.toList());
 
         if (selectedItems.isEmpty()) {

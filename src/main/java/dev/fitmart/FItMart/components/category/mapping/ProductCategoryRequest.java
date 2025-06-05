@@ -14,7 +14,7 @@ public class ProductCategoryRequest {
     private String handle;
     private String description;
     private int rank;
-    private int is_active;
+    private Boolean is_active;
 
     private String parent_category_id;
 }
