@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private FilterService filterService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public UserResponse registerUser(RegisterRequest request){
         // Check if email already exists
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService{
         newUser = userRepository.save(newUser);
         return convertToResponse(newUser);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public String findByUserId() {
       String loggedInUserEmail  =  authenticationFacade.getAuthentication().getName();
@@ -98,7 +99,7 @@ public class UserServiceImpl implements UserService{
 
         return response;
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public UserResponse findUserByUuid(String uuid) {
         UserModel user = userRepository.findByUuid(uuid)
