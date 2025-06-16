@@ -5,7 +5,7 @@ import dev.fitmart.FItMart.components.order.mapping.OrderRequest;
 import dev.fitmart.FItMart.components.order.mapping.OrderResponse;
 import dev.fitmart.FItMart.components.order.service.OrderService;
 import dev.fitmart.FItMart.components.product.mapping.ProductResponse;
-import dev.fitmart.FItMart.exception.ApiResponse;
+import dev.fitmart.FItMart.exception.BaseResponse;
 import dev.fitmart.FItMart.exception.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class OrderController {
     // ✅ Lấy tất cả đơn hàng
     @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping
-    public ResponseEntity<ApiResponse<Paginated<List<OrderResponse>>>> getAllOrders(
+    public ResponseEntity<BaseResponse<Paginated<List<OrderResponse>>>> getAllOrders(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int limit,
             @RequestParam(required = false) String filterField,
@@ -60,7 +60,7 @@ public class OrderController {
     // ✅ Lấy chi tiết đơn hàng theo UUID
     @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}")
-    public ResponseEntity<ApiResponse<OrderResponse>> getOrder(@PathVariable String uuid) {
+    public ResponseEntity<BaseResponse<OrderResponse>> getOrder(@PathVariable String uuid) {
         OrderResponse response = orderService.getOrder(uuid);
         return ResponseUtils.success(response);
     }
@@ -68,7 +68,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     // ✅ Cập nhật trạng thái đơn hàng
     @PutMapping("/{uuid}/status")
-    public ResponseEntity<ApiResponse<OrderResponse>> updateStatus(
+    public ResponseEntity<BaseResponse<OrderResponse>> updateStatus(
             @PathVariable String uuid,
             @RequestBody OrderRequest request
     ) {

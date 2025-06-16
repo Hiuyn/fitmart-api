@@ -6,7 +6,7 @@ import dev.fitmart.FItMart.components.category.mapping.ProductCategoryRequest;
 import dev.fitmart.FItMart.components.category.model.ProductCategory;
 import dev.fitmart.FItMart.components.category.service.ProductCategoryService;
 import dev.fitmart.FItMart.components.category.mapping.ProductCategoryResponse;
-import dev.fitmart.FItMart.exception.ApiResponse;
+import dev.fitmart.FItMart.exception.BaseResponse;
 import dev.fitmart.FItMart.exception.ResponseUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class ProductCategoryController {
 
     @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping
-    public ResponseEntity<ApiResponse<Paginated<List<ProductCategoryResponse>>>> getAllProducts(
+    public ResponseEntity<BaseResponse<Paginated<List<ProductCategoryResponse>>>> getAllProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int limit,
             @RequestParam(required = false) String filterField,
@@ -63,20 +63,20 @@ public class ProductCategoryController {
 
     @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}")
-    public ResponseEntity<ApiResponse<ProductCategoryResponse>> getProductByUuid(@PathVariable String uuid) {
+    public ResponseEntity<BaseResponse<ProductCategoryResponse>> getProductByUuid(@PathVariable String uuid) {
         ProductCategoryResponse ProductCategoryResponse = productCategoryService.findProductCategoryByUuid(uuid);
         return ResponseUtils.success(ProductCategoryResponse);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductCategory>> createProductCategory(@Valid @RequestBody ProductCategoryRequest productRequest) {
+    public ResponseEntity<BaseResponse<ProductCategory>> createProductCategory(@Valid @RequestBody ProductCategoryRequest productRequest) {
         return ResponseUtils.success(productCategoryService.createProductCategory(productRequest));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{uuid}")
-    public ResponseEntity<ApiResponse<ProductCategory>> updateProductCategory(@PathVariable String uuid, @Valid @RequestBody ProductCategoryRequest productRequest) {
+    public ResponseEntity<BaseResponse<ProductCategory>> updateProductCategory(@PathVariable String uuid, @Valid @RequestBody ProductCategoryRequest productRequest) {
         return ResponseUtils.success(productCategoryService.updateProductCategory(uuid, productRequest));
     }
 

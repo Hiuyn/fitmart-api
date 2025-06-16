@@ -9,7 +9,7 @@ import dev.fitmart.FItMart.components.product.service.ProductOptionService;
 import dev.fitmart.FItMart.components.product.service.ProductService;
 import dev.fitmart.FItMart.components.product.service.ProductServiceImpl;
 import dev.fitmart.FItMart.components.product.service.ProductVariantService;
-import dev.fitmart.FItMart.exception.ApiResponse;
+import dev.fitmart.FItMart.exception.BaseResponse;
 import dev.fitmart.FItMart.exception.ResponseUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping
-    public ResponseEntity<ApiResponse<Paginated<List<ProductResponse>>>> getAllProducts(
+    public ResponseEntity<BaseResponse<Paginated<List<ProductResponse>>>> getAllProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int limit,
             @RequestParam(required = false) String filterField,
@@ -67,7 +67,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductByUuid(@PathVariable String uuid) {
+    public ResponseEntity<BaseResponse<ProductResponse>> getProductByUuid(@PathVariable String uuid) {
         ProductResponse productResponse = productService.findProductByUuid(uuid);
         return ResponseUtils.success(productResponse);
     }
@@ -332,7 +332,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}/options")
-    public ResponseEntity<ApiResponse<Paginated<List<ProductOptionResponse>>>> getOptionsByProductUuid(
+    public ResponseEntity<BaseResponse<Paginated<List<ProductOptionResponse>>>> getOptionsByProductUuid(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int limit,
             @RequestParam(required = false) String filterField,
@@ -366,7 +366,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")
     @GetMapping("/{uuid}/variants")
-    public ResponseEntity<ApiResponse<Paginated<List<ProductVariantResponse>>>> getVariantsByProductUuid(
+    public ResponseEntity<BaseResponse<Paginated<List<ProductVariantResponse>>>> getVariantsByProductUuid(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int limit,
             @RequestParam(required = false) String filterField,

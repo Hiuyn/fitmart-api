@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 public interface CartService {
     CartResponse createCart();
+    CartResponse getCartById(String cartId);
     CartResponse addLineItem(String cartId, CartRequest request);
     CartItemResponse updateCartItem(String cartId, String itemId, CartItemRequest request);
     void deleteCartItem(String cartId, String itemId);

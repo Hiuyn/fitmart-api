@@ -6,41 +6,64 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setStatus(ex.getStatus().value());
-        errorResponse.setError(ex.getStatus().getReasonPhrase());
-        errorResponse.setMessage(ex.getMessage());
+    public ResponseEntity<BaseResponse<List<Object>>> handleApiException(ApiException ex) {
+        BaseResponse<List<Object>> errorResponse = new BaseResponse<>(
+                ex.getStatus().value(),
+                "error",
+                Collections.emptyList(),
+                ex.getMessage()
+        );
         return new ResponseEntity<>(errorResponse, ex.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        errorResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        errorResponse.setMessage("An unexpected error occurred");
+    public ResponseEntity<BaseResponse<List<Object>>> handleGenericException(Exception ex) {
+        BaseResponse<List<Object>> errorResponse = new BaseResponse<>(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "error",
+                Collections.emptyList(),
+                "An unexpected error occurred"
+        );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<BaseResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
         });
-        return ResponseEntity.badRequest().body(errors);
+
+        BaseResponse<Map<String, String>> errorResponse = new BaseResponse<>(
+                HttpStatus.BAD_REQUEST.value(),
+                "error",
+                errors,
+                "Validation failed"
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+    public ResponseEntity<BaseResponse<List<Object>>> handleBadCredentials(BadCredentialsException ex) {
+        BaseResponse<List<Object>> errorResponse = new BaseResponse<>(
+                HttpStatus.UNAUTHORIZED.value(),
+                "error",
+                Collections.emptyList(),
+                "Invalid username or password"
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 }
+

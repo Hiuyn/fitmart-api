@@ -61,6 +61,14 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
+    public CartResponse getCartById(String cartId) {
+        Cart cart = cartRepository.findByUuid(cartId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Cart not found with id: " + cartId));
+
+        return convertToResponse(cart);
+    }
+
+    @Override
     public CartResponse addLineItem(String cartId, CartRequest request) {
         Cart cart = validateCart(cartId);
 
