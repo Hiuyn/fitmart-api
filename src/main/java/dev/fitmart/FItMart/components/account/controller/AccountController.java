@@ -5,6 +5,8 @@ import dev.fitmart.FItMart.components.account.mapping.AccountRequest;
 import dev.fitmart.FItMart.components.account.mapping.AccountResponse;
 import dev.fitmart.FItMart.components.account.model.Account;
 import dev.fitmart.FItMart.components.account.service.AccountService;
+import dev.fitmart.FItMart.exception.BaseResponse;
+import dev.fitmart.FItMart.exception.ResponseUtils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +31,13 @@ public class AccountController {
     }
 
     @PostMapping()
-    public ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody Account account) {
+    public ResponseEntity<BaseResponse<AccountResponse>> createAccount(@Valid @RequestBody Account account) {
         Account createdAccount = accountService.createAccount(account);
-        return new ResponseEntity<>(accountService.convertAccountToResponse(createdAccount), HttpStatus.CREATED);
+        return ResponseUtils.success(accountService.convertAccountToResponse(createdAccount));
     }
 
     @GetMapping()
-    public ResponseEntity<Paginated<List<AccountResponse>>> getAllUsers(
+    public ResponseEntity<BaseResponse<Paginated<List<AccountResponse>>>> getAllUsers(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int limit,
             @RequestParam(required = false) String filterField,
@@ -62,21 +64,21 @@ public class AccountController {
             }
         }
 
-        return ResponseEntity.ok(accountService.getAllAccounts(page, limit, filters, q, createdAtSort));
+        return ResponseUtils.success(accountService.getAllAccounts(page, limit, filters, q, createdAtSort));
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<AccountResponse> getUserById(@PathVariable String uuid) {
-        return ResponseEntity.ok(accountService.findAccountByUuid(uuid));
+    public ResponseEntity<BaseResponse<AccountResponse>> getUserById(@PathVariable String uuid) {
+        return ResponseUtils.success(accountService.findAccountByUuid(uuid));
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<AccountResponse> updateAccount(@PathVariable String uuid, @Valid @RequestBody Account account) {
-        return ResponseEntity.ok(accountService.updateAccount(uuid, account));
+    public ResponseEntity<BaseResponse<AccountResponse>> updateAccount(@PathVariable String uuid, @Valid @RequestBody Account account) {
+        return ResponseUtils.success(accountService.updateAccount(uuid, account));
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable String uuid) {
+    public ResponseEntity<BaseResponse<Void>> deleteAccount(@PathVariable String uuid) {
         accountService.deleteAccount(uuid);
         return ResponseEntity.noContent().build();
     }

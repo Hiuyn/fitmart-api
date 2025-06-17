@@ -82,19 +82,19 @@ public class ProductCategoryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<Void> deleteProductCategory(@PathVariable String uuid) {
+    public ResponseEntity<BaseResponse<Void>> deleteProductCategory(@PathVariable String uuid) {
         productCategoryService.deleteProductCategory(uuid);
-        return ResponseEntity.noContent().build();
+        return ResponseUtils.noContent();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{uuid}/products")
-    public ResponseEntity<ProductCategoryResponse> manageProductsForCategory(
+    public ResponseEntity<BaseResponse<ProductCategoryResponse>> manageProductsForCategory(
             @PathVariable String uuid,
             @Valid @RequestBody Manage<String> manageRequest
     ) {
         ProductCategory updatedCategory = productCategoryService.manageProductsForCategory(uuid, manageRequest);
         ProductCategoryResponse response = productCategoryService.convertProductCategoryToResponse(updatedCategory);
-        return ResponseEntity.ok(response);
+        return ResponseUtils.success(response);
     }
 }

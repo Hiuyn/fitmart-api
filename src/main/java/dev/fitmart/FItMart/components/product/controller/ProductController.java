@@ -74,7 +74,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest productRequest) {
+    public ResponseEntity<BaseResponse<ProductResponse>> createProduct(@Valid @RequestBody ProductRequest productRequest) {
         // Tạo sản phẩm
         Product product = productService.createProduct(productRequest.getProduct());
         String productId = product.getUuid();
@@ -152,13 +152,13 @@ public class ProductController {
         }
 
         // Chuyển đổi sang ProductResponse
-        ProductResponse response = ((ProductServiceImpl) productService).convertProductToResponse(product);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        ProductResponse response = productService.convertProductToResponse(product);
+        return ResponseUtils.success(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{uuid}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable String uuid, @Valid @RequestBody ProductRequest productRequest) {
+    public ResponseEntity<BaseResponse<ProductResponse>> updateProduct(@PathVariable String uuid, @Valid @RequestBody ProductRequest productRequest) {
         // Cập nhật sản phẩm
         Product product = productService.updateProduct(uuid, productRequest.getProduct());
         String productId = product.getUuid();
@@ -304,12 +304,12 @@ public class ProductController {
 
         // Chuyển đổi sang ProductResponse
         ProductResponse response = productService.convertProductToResponse(product);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseUtils.success(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable String uuid, @RequestBody(required = false) ProductRequest productRequest) {
+    public ResponseEntity<BaseResponse<Void>> deleteProduct(@PathVariable String uuid, @RequestBody(required = false) ProductRequest productRequest) {
         // Xóa sản phẩm (soft delete)
         productService.deleteProduct(uuid);
 
@@ -327,7 +327,7 @@ public class ProductController {
             }
         }
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseUtils.noContent();
     }
 
     @PreAuthorize("hasRole('ADMIN', 'ACCOUNT')")

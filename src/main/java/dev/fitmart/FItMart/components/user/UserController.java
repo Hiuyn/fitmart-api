@@ -4,6 +4,8 @@ import dev.fitmart.FItMart.common.model.Paginated;
 import dev.fitmart.FItMart.components.user.mapping.RegisterRequest;
 import dev.fitmart.FItMart.components.user.mapping.UserResponse;
 import dev.fitmart.FItMart.components.user.service.UserService;
+import dev.fitmart.FItMart.exception.BaseResponse;
+import dev.fitmart.FItMart.exception.ResponseUtils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +25,24 @@ public class UserController {
 
     // CREATE
     @PostMapping("/register")
-    public UserResponse register(@RequestBody RegisterRequest request) {
-        return userService.registerUser(request);
+    public ResponseEntity<BaseResponse<UserResponse>> register(@Valid @RequestBody RegisterRequest request) {
+        return ResponseUtils.success(userService.registerUser(request));
     }
 
     @GetMapping("/check-admin")
-    public ResponseEntity<Boolean> checkAdmin() {
-        return ResponseEntity.ok(userService.hasAdminUser());
+    public ResponseEntity<BaseResponse<Boolean>> checkAdmin() {
+        return ResponseUtils.success(userService.hasAdminUser());
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserModel user) {
+    public ResponseEntity<BaseResponse<UserResponse>> createUser(@Valid @RequestBody UserModel user) {
         UserModel createdUser = userService.createUser(user);
-        return new ResponseEntity<>(userService.convertUserToResponse(createdUser), HttpStatus.CREATED);
+        return ResponseUtils.success(userService.convertUserToResponse(createdUser));
     }
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Paginated<List<UserResponse>>> getAllUsers(
+    public ResponseEntity<BaseResponse<Paginated<List<UserResponse>>>> getAllUsers(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int limit,
             @RequestParam(required = false) String filterField,
@@ -67,24 +69,24 @@ public class UserController {
             }
         }
 
-        return ResponseEntity.ok(userService.getAllUsers(page, limit, filters, q, createdAtSort));
+        return ResponseUtils.success(userService.getAllUsers(page, limit, filters, q, createdAtSort));
     }
 
     @GetMapping("/users/{uuid}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable String uuid) {
-        return ResponseEntity.ok(userService.findUserByUuid(uuid));
+    public ResponseEntity<BaseResponse<UserResponse>> getUserById(@PathVariable String uuid) {
+        return ResponseUtils.success(userService.findUserByUuid(uuid));
     }
 
     @PutMapping("/users/{uuid}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable String uuid, @Valid @RequestBody UserModel user) {
-        return ResponseEntity.ok(userService.updateUser(uuid, user));
+    public ResponseEntity<BaseResponse<UserResponse>> updateUser(@PathVariable String uuid, @Valid @RequestBody UserModel user) {
+        return ResponseUtils.success(userService.updateUser(uuid, user));
     }
 
     @DeleteMapping("/users/{uuid}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUser(@PathVariable String uuid) {
+    public ResponseEntity<BaseResponse<Void>> deleteUser(@PathVariable String uuid) {
         userService.deleteUser(uuid);
-        return ResponseEntity.noContent().build();
+        return ResponseUtils.noContent();
     }
 
 //    @GetMapping("/auth/me")

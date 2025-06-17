@@ -5,6 +5,8 @@ import dev.fitmart.FItMart.components.permissions.mapping.PermissionRequest;
 import dev.fitmart.FItMart.components.permissions.mapping.PermissionResponse;
 import dev.fitmart.FItMart.components.permissions.service.PermissionService;
 import dev.fitmart.FItMart.components.product.mapping.ProductResponse;
+import dev.fitmart.FItMart.exception.BaseResponse;
+import dev.fitmart.FItMart.exception.ResponseUtils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,21 +27,21 @@ public class PermissionController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<PermissionResponse> createPermission(@Valid @RequestBody PermissionRequest request) {
+    public ResponseEntity<BaseResponse<PermissionResponse>> createPermission(@Valid @RequestBody PermissionRequest request) {
         PermissionResponse response = permissionService.createPermission(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseUtils.success(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<PermissionResponse> getPermission(@PathVariable String id) {
+    public ResponseEntity<BaseResponse<PermissionResponse>> getPermission(@PathVariable String id) {
         PermissionResponse response = permissionService.getPermission(id);
-        return ResponseEntity.ok(response);
+        return ResponseUtils.success(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<Paginated<List<PermissionResponse>>> getAllPermissions(
+    public ResponseEntity<BaseResponse<Paginated<List<PermissionResponse>>>> getAllPermissions(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "25") int limit,
             @RequestParam(required = false) String filterField,
@@ -68,20 +70,20 @@ public class PermissionController {
         }
 
         Paginated<List<PermissionResponse>> response = permissionService.getAllPermissions(page, limit, filters, q, createdAtSort);
-        return ResponseEntity.ok(response);
+        return ResponseUtils.success(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<PermissionResponse> updatePermission(@PathVariable String id, @Valid @RequestBody PermissionRequest request) {
+    public ResponseEntity<BaseResponse<PermissionResponse>> updatePermission(@PathVariable String id, @Valid @RequestBody PermissionRequest request) {
         PermissionResponse response = permissionService.updatePermission(id, request);
-        return ResponseEntity.ok(response);
+        return ResponseUtils.success(response);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePermission(@PathVariable String id) {
+    public ResponseEntity<BaseResponse<Void>> deletePermission(@PathVariable String id) {
         permissionService.deletePermission(id);
-        return ResponseEntity.noContent().build();
+        return ResponseUtils.noContent();
     }
 }
