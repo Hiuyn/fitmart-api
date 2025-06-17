@@ -1,5 +1,9 @@
 package dev.fitmart.FItMart.auth;
 
+import dev.fitmart.FItMart.components.account.model.Account;
+import dev.fitmart.FItMart.components.user.UserModel;
+import dev.fitmart.FItMart.exception.BaseResponse;
+import dev.fitmart.FItMart.exception.ResponseUtils;
 import dev.fitmart.FItMart.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -22,18 +26,20 @@ public class AuthenticationController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public AuthenticationResponse login(@Valid @RequestBody AuthenticationRequest request) {
+    public ResponseEntity<BaseResponse<AuthenticationResponse<UserModel>>> login(@Valid @RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
         final String jwtToken = jwtUtil.generateToken(userDetails);
-        return new AuthenticationResponse(jwtToken, request.getEmail());
+        UserModel user = userDetailsService.getUserModelByEmail(request.getEmail());
+        return ResponseUtils.success(new AuthenticationResponse<UserModel>(jwtToken, user));
     }
 
     @PostMapping("/accounts/login")
-    public AuthenticationResponse accountLogin(@Valid @RequestBody AuthenticationRequest request) {
+    public ResponseEntity<BaseResponse<AuthenticationResponse<Account>>> accountLogin(@Valid @RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
         final String jwtToken = jwtUtil.generateToken(userDetails);
-        return new AuthenticationResponse(jwtToken, request.getEmail());
+        Account account = userDetailsService.getAccountByEmail(request.getEmail());
+        return ResponseUtils.success(new AuthenticationResponse<>(jwtToken, account));
     }
 }

@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AuthenticationResponse {
+public class AuthenticationResponse<T> {
 
     private String token;
-    private String email;
+    private T data;
 }

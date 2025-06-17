@@ -34,4 +34,14 @@ public class AppUserDetailsService implements UserDetailsService {
                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
        return new User(user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
     }
+
+    public UserModel getUserModelByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public Account getAccountByEmail(String email) {
+        return accountRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Account not found"));
+    }
 }
