@@ -23,7 +23,7 @@ public class CartController {
     @Autowired
     private final CartService cartService;
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<BaseResponse<CartResponse>> createCart() {
         return ResponseUtils.success(cartService.createCart());
     }

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/product_categories")
+@RequestMapping("/api/v1/product-categories")
 public class ProductCategoryController {
     @Autowired
     private ProductCategoryService productCategoryService;
