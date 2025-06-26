@@ -27,10 +27,10 @@ public class Product {
     private String title;
     private String description;
     private String thumbnail;
-    @NotBlank(message = "SKU không được trống")
+    @NotBlank(message = "Slug không được trống")
     @Pattern(
             regexp = "^[a-z0-9]+(-[a-z0-9]+)*$",
-            message = "SKU chỉ được chứa chữ thường và số, cách nhau bằng dấu gạch ngang, không dấu tiếng Việt"
+            message = "Slug chỉ được chứa chữ thường và số, cách nhau bằng dấu gạch ngang, không dấu tiếng Việt"
     )
     private String slug;
     private String status;
