@@ -2,6 +2,7 @@ package dev.fitmart.FItMart.components.account.model;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +32,7 @@ public class Account {
     @NotBlank(message = "Email không được trống")
     @Email(message = "Email must be a valid format")
     private String email;
-    @NotBlank(message = "Password không được trống")
-    @Size(min = 6, max = 100, message = "Password phải nằm trong khoảng từ 6 đến 100 ký tự")
+    @NotNull(message = "Password không được trống")
     private String password;
     private String avatar_url;
     private String address;

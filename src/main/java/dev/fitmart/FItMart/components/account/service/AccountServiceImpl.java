@@ -152,6 +152,9 @@ public class AccountServiceImpl implements AccountService{
         }
         if (accountUpdate.getUser_name() != null) Account.setUser_name(accountUpdate.getUser_name());
         if (accountUpdate.getPassword() != null && !accountUpdate.getPassword().isBlank()) {
+            if (accountUpdate.getPassword().length() < 6 || accountUpdate.getPassword().length() > 20) {
+                throw new ApiException(HttpStatus.BAD_REQUEST, "Password phải nằm trong khoảng từ 6 đến 20 ký tự");
+            }
             Account.setPassword(passwordEncoder.encode(accountUpdate.getPassword()));
         }
         if (accountUpdate.getAvatar_url() != null) Account.setAvatar_url(accountUpdate.getAvatar_url());

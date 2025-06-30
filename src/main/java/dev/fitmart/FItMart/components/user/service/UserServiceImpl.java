@@ -110,6 +110,13 @@ public class UserServiceImpl implements UserService{
     @Override
     @PreAuthorize("hasRole('ADMIN')")
     public UserModel createUser(UserModel user) {
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Password không được để trống");
+        }
+        if (user.getPassword().length() < 6 || user.getPassword().length() > 20) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Password phải nằm trong khoảng từ 6 đến 20 ký tự");
+        }
+
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Email already exists: " + user.getEmail());
         }
@@ -147,6 +154,10 @@ public class UserServiceImpl implements UserService{
         if (currentUser.getRole().equals("ADMIN")) {
             if (userUpdate.getUser_name() != null) user.setUser_name(userUpdate.getUser_name());
             if (userUpdate.getPassword() != null && !userUpdate.getPassword().isBlank()) {
+                if (user.getPassword().length() < 6 || user.getPassword().length() > 20) {
+                    throw new ApiException(HttpStatus.BAD_REQUEST, "Password phải nằm trong khoảng từ 6 đến 20 ký tự");
+                }
+
                 user.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
             }
             if (userUpdate.getAvatar_url() != null) user.setAvatar_url(userUpdate.getAvatar_url());
@@ -157,6 +168,10 @@ public class UserServiceImpl implements UserService{
             // Non-ADMIN can only update email, user_name, password, avatar_url
             if (userUpdate.getUser_name() != null) user.setUser_name(userUpdate.getUser_name());
             if (userUpdate.getPassword() != null && !userUpdate.getPassword().isBlank()) {
+                if (user.getPassword().length() < 6 || user.getPassword().length() > 20) {
+                    throw new ApiException(HttpStatus.BAD_REQUEST, "Password phải nằm trong khoảng từ 6 đến 20 ký tự");
+                }
+
                 user.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
             }
             if (userUpdate.getAvatar_url() != null) user.setAvatar_url(userUpdate.getAvatar_url());
