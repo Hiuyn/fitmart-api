@@ -154,21 +154,20 @@ public class UserServiceImpl implements UserService{
         if (currentUser.getRole().equals("ADMIN")) {
             if (userUpdate.getUser_name() != null) user.setUser_name(userUpdate.getUser_name());
             if (userUpdate.getPassword() != null && !userUpdate.getPassword().isBlank()) {
-                if (user.getPassword().length() < 6 || user.getPassword().length() > 20) {
+                if (userUpdate.getPassword().length() < 6 || userUpdate.getPassword().length() > 20) {
                     throw new ApiException(HttpStatus.BAD_REQUEST, "Password phải nằm trong khoảng từ 6 đến 20 ký tự");
                 }
 
                 user.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
             }
             if (userUpdate.getAvatar_url() != null) user.setAvatar_url(userUpdate.getAvatar_url());
-            if (userUpdate.getRole() != null) user.setRole(userUpdate.getRole());
-            if (userUpdate.getPermissions() != null) user.setPermissions(userUpdate.getPermissions());
-            if (userUpdate.getMetadata() != null) user.setMetadata(userUpdate.getMetadata());
+
         } else {
             // Non-ADMIN can only update email, user_name, password, avatar_url
             if (userUpdate.getUser_name() != null) user.setUser_name(userUpdate.getUser_name());
             if (userUpdate.getPassword() != null && !userUpdate.getPassword().isBlank()) {
-                if (user.getPassword().length() < 6 || user.getPassword().length() > 20) {
+                System.out.println("user.getPassword().length() " + userUpdate.getPassword() + " " + userUpdate.getPassword().length());
+                if (userUpdate.getPassword().length() < 6 || userUpdate.getPassword().length() > 20) {
                     throw new ApiException(HttpStatus.BAD_REQUEST, "Password phải nằm trong khoảng từ 6 đến 20 ký tự");
                 }
 
@@ -177,6 +176,9 @@ public class UserServiceImpl implements UserService{
             if (userUpdate.getAvatar_url() != null) user.setAvatar_url(userUpdate.getAvatar_url());
         }
 
+        if (userUpdate.getRole() != null) user.setRole(userUpdate.getRole());
+        if (userUpdate.getPermissions() != null) user.setPermissions(userUpdate.getPermissions());
+        if (userUpdate.getMetadata() != null) user.setMetadata(userUpdate.getMetadata());
         user.setUpdated_at(Instant.now());
         user = userRepository.save(user);
         return convertUserToResponse(user);
