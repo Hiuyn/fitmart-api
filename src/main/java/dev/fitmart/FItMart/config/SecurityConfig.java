@@ -36,7 +36,7 @@ public class SecurityConfig {
 
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/register", "/api/v1/login", "/api/v1/check-admin", "/api/v1/accounts/register", "/api/v1/accounts/login", "/api/v1/uploads/**").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/register", "/api/v1/login", "/api/v1/check-admin", "/api/v1/accounts/register", "/api/v1/accounts/login", "/api/v1/uploads/**", "/api/v1/store/products/**", "/api/v1/store/product-categories/**").permitAll()
                         // Các API cho ROLE_ACCOUNT chỉ được GET
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/**").hasAnyRole("ACCOUNT", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/orders/**").hasAnyRole("ACCOUNT", "ADMIN")
