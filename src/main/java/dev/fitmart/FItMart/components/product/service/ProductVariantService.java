@@ -14,4 +14,5 @@ public interface ProductVariantService {
     ProductVariant createVariantFromRequest(ProductVariantRequest variantRequest, String productId, List<ProductVariant.Option> options);
     ProductVariant updateVariant(String uuid, ProductVariantRequest variantRequest, List<ProductVariant.Option> options);
     void deleteVariant(String uuid);
+    ProductVariantResponse convertVariantToResponse(ProductVariant variant);
 }

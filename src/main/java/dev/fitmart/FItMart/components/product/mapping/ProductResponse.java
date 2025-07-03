@@ -26,4 +26,7 @@ public class ProductResponse {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
     private LocalDateTime deleted_at;
+
+    private List<ProductOptionResponse> options;
+    private List<ProductVariantResponse> variants;
 }

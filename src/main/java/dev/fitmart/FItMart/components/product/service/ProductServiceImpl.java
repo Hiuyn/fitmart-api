@@ -3,8 +3,12 @@ package dev.fitmart.FItMart.components.product.service;
 import dev.fitmart.FItMart.common.model.Filter;
 import dev.fitmart.FItMart.common.model.Paginated;
 import dev.fitmart.FItMart.common.service.FilterService;
+import dev.fitmart.FItMart.components.product.mapping.ProductOptionResponse;
 import dev.fitmart.FItMart.components.product.mapping.ProductResponse;
+import dev.fitmart.FItMart.components.product.mapping.ProductVariantResponse;
 import dev.fitmart.FItMart.components.product.model.Product;
+import dev.fitmart.FItMart.components.product.model.ProductOption;
+import dev.fitmart.FItMart.components.product.model.ProductVariant;
 import dev.fitmart.FItMart.components.product.repository.ProductOptionRepository;
 import dev.fitmart.FItMart.components.product.repository.ProductRepository;
 import dev.fitmart.FItMart.components.product.repository.ProductVariantRepository;
@@ -30,6 +34,14 @@ public class ProductServiceImpl implements ProductService{
     private ProductRepository productRepository;
     @Autowired
     private FilterService filterService;
+    @Autowired
+    private ProductOptionRepository productOptionRepository;
+    @Autowired
+    private ProductVariantRepository productVariantRepository;
+    @Autowired
+    private ProductOptionService productOptionService;
+    @Autowired
+    private ProductVariantService productVariantService;
 
     @Override
     public Paginated<List<ProductResponse>> getAllProducts(int page, int limit, Map<String, String> filters, String q, int createdAtSort) {
@@ -103,15 +115,14 @@ public class ProductServiceImpl implements ProductService{
                 productRepository.findBySlug(product.getSlug()).isPresent()) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Slug already exists: " + product.getSlug());
         }
-
         existingProduct.setTitle(product.getTitle());
         existingProduct.setDescription(product.getDescription());
         existingProduct.setThumbnail(product.getThumbnail());
         existingProduct.setSlug(product.getSlug());
         existingProduct.setStatus(product.getStatus());
         existingProduct.setType(product.getType());
-        existingProduct.setCategoryId(product.getCategoryId());
-        existingProduct.setCollectionId(product.getCollectionId());
+        existingProduct.setCategory_id(product.getCategory_id());
+        existingProduct.setCollection_id(product.getCollection_id());
         existingProduct.setMetadata(product.getMetadata());
 
         existingProduct.setUpdatedAt(LocalDateTime.now());
@@ -136,12 +147,25 @@ public class ProductServiceImpl implements ProductService{
         response.setSlug(product.getSlug());
         response.setStatus(product.getStatus());
         response.setType(product.getType());
-        response.setCategory_id(product.getCategoryId());
-        response.setCollection_id(product.getCollectionId());
+        response.setCategory_id(product.getCategory_id());
+        response.setCollection_id(product.getCollection_id());
         response.setMetadata(product.getMetadata());
         response.setCreated_at(product.getCreatedAt());
         response.setUpdated_at(product.getUpdatedAt());
         response.setDeleted_at(product.getDeletedAt());
+
+        List<ProductOption> options = productOptionRepository.findByProductId(product.getUuid());
+        List<ProductOptionResponse> optionResponses = options.stream()
+                .map(productOptionService::convertOptionToResponse)
+                .collect(Collectors.toList());
+        response.setOptions(optionResponses);
+
+        // Lấy variants theo productId
+        List<ProductVariant> variants = productVariantRepository.findByProductId(product.getUuid());
+        List<ProductVariantResponse> variantResponses = variants.stream()
+                .map(productVariantService::convertVariantToResponse)
+                .collect(Collectors.toList());
+        response.setVariants(variantResponses);
 
         return response;
     }

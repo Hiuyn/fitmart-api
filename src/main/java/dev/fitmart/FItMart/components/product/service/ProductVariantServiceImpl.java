@@ -40,7 +40,7 @@ public class ProductVariantServiceImpl implements ProductVariantService{
         variant.setUpdatedAt(LocalDateTime.now());
         variant.setPrice(variant.getPrice());
         variant.setImage(variant.getImage());
-        variant.setAllowBackorder(variant.getInventoryQuantity() != null && variant.getInventoryQuantity() > 0);
+        variant.setAllow_backorder(variant.getInventory_quantity() != null && variant.getInventory_quantity() > 0);
 
         // Validate options
         if (variant.getOptions() != null) {
@@ -69,9 +69,11 @@ public class ProductVariantServiceImpl implements ProductVariantService{
         variant.setHeight(variantRequest.getHeight());
         variant.setWidth(variantRequest.getWidth());
         variant.setLength(variantRequest.getLength());
-        variant.setInventoryQuantity(variantRequest.getInventory_quantity());
+        variant.setInventory_quantity(variantRequest.getInventory_quantity());
         variant.setOptions(options);
         variant.setProductId(productId);
+        variant.setPrice(variantRequest.getPrice());
+        variant.setImage(variantRequest.getImage());
         return createVariant(variant);
     }
 
@@ -95,8 +97,8 @@ public class ProductVariantServiceImpl implements ProductVariantService{
 
         existingVariant.setPrice(variant.getPrice());
         existingVariant.setImage(variant.getImage());
-        existingVariant.setInventoryQuantity(variant.getInventory_quantity());
-        existingVariant.setAllowBackorder(variant.getInventory_quantity() != null && variant.getInventory_quantity() > 0);
+        existingVariant.setInventory_quantity(variant.getInventory_quantity());
+        existingVariant.setAllow_backorder(variant.getInventory_quantity() != null && variant.getInventory_quantity() > 0);
 
         List<ProductOption> productOptions = productOptionRepository.findByProductId(existingVariant.getProductId());
         for (ProductVariant.Option option : options) {
@@ -183,6 +185,7 @@ public class ProductVariantServiceImpl implements ProductVariantService{
         return convertVariantToResponse(variant);
     }
 
+    @Override
     public ProductVariantResponse convertVariantToResponse(ProductVariant variant) {
         ProductVariantResponse response = new ProductVariantResponse();
         response.setUuid(variant.getUuid());
@@ -193,8 +196,8 @@ public class ProductVariantServiceImpl implements ProductVariantService{
         response.setHeight(variant.getHeight());
         response.setWidth(variant.getWidth());
         response.setLength(variant.getLength());
-        response.setInventoryQuantity(variant.getInventoryQuantity());
-        response.setAllowBackorder(variant.getAllowBackorder());
+        response.setInventory_quantity(variant.getInventory_quantity());
+        response.setAllow_backorder(variant.getAllow_backorder());
         response.setProduct_id(variant.getProductId());
         response.setOptions(variant.getOptions());
         response.setPrice(variant.getPrice());

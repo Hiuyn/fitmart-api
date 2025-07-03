@@ -37,9 +37,9 @@ public class ProductVariant {
     private Integer width;
     private Integer length;
     @Field("inventory_quantity")
-    private Integer inventoryQuantity;
+    private Integer inventory_quantity;
     @Field("allow_backorder")
-    private Boolean allowBackorder;
+    private Boolean allow_backorder;
     private List<Option> options;
     private Long price;
     @Field("product_id")

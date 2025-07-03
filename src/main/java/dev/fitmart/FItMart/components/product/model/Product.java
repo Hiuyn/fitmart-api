@@ -35,10 +35,8 @@ public class Product {
     private String slug;
     private String status;
     private String type;
-    @Field("category_id")
-    private String categoryId;
-    @Field("collection_id")
-    private String collectionId;
+    private String category_id;
+    private String collection_id;
     @Field("created_at")
     private LocalDateTime createdAt;
     @Field("updated_at")

@@ -160,6 +160,8 @@ public class ProductController {
     @PutMapping("/{uuid}")
     public ResponseEntity<BaseResponse<ProductResponse>> updateProduct(@PathVariable String uuid, @Valid @RequestBody ProductRequest productRequest) {
         // Cập nhật sản phẩm
+        System.out.println("==== Đã vào controller updateProduct ====");
+        System.out.println("Request Body: " + productRequest);
         Product product = productService.updateProduct(uuid, productRequest.getProduct());
         String productId = product.getUuid();
 

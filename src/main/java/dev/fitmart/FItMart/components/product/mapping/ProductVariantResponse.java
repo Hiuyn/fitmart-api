@@ -23,8 +23,8 @@ public class ProductVariantResponse {
     private Integer height; //cm
     private Integer width;  //cm
     private Integer length;  //cm
-    private Integer inventoryQuantity;
-    private Boolean allowBackorder;
+    private Integer inventory_quantity;
+    private Boolean allow_backorder;
     private List<ProductVariant.Option> options;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;

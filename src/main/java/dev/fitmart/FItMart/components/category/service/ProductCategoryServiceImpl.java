@@ -197,7 +197,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService{
                 Product product = productRepository.findByUuid(productUuid).orElse(null);
                 if (product == null) continue;
                 // Set category for product
-                product.setCategoryId(categoryUuid);
+                product.setCategory_id(categoryUuid);
                 productRepository.save(product); // Save the updated product
 
                 if (!categoryProducts.contains(product)) {
@@ -217,7 +217,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService{
                 }
 
                 // Clear category from product
-                product.setCategoryId(null);
+                product.setCategory_id(null);
                 productRepository.save(product);
             }
         }
