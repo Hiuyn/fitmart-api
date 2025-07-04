@@ -9,8 +9,8 @@ import java.util.*;
 public interface ProductService {
     Paginated<List<ProductResponse>> getAllProducts(int page, int limit, Map<String, String> filters, String q, int createdAtSort);
     ProductResponse findProductByUuid(String uuid);
-    Product createProduct(Product product);
-    Product updateProduct(String uuid, Product product);
+    ProductResponse createProduct(Product product);
+    ProductResponse updateProduct(String uuid, Product product);
     void deleteProduct(String uuid);
     ProductResponse convertProductToResponse(Product product);
 }

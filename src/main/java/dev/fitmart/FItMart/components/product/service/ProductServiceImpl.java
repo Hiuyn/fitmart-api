@@ -1,8 +1,10 @@
 package dev.fitmart.FItMart.components.product.service;
 
 import dev.fitmart.FItMart.common.model.Filter;
+import dev.fitmart.FItMart.common.model.Manage;
 import dev.fitmart.FItMart.common.model.Paginated;
 import dev.fitmart.FItMart.common.service.FilterService;
+import dev.fitmart.FItMart.components.category.service.ProductCategoryService;
 import dev.fitmart.FItMart.components.product.mapping.ProductOptionResponse;
 import dev.fitmart.FItMart.components.product.mapping.ProductResponse;
 import dev.fitmart.FItMart.components.product.mapping.ProductVariantResponse;
@@ -42,6 +44,8 @@ public class ProductServiceImpl implements ProductService{
     private ProductOptionService productOptionService;
     @Autowired
     private ProductVariantService productVariantService;
+    @Autowired
+    private ProductCategoryService productCategoryService;
 
     @Override
     public Paginated<List<ProductResponse>> getAllProducts(int page, int limit, Map<String, String> filters, String q, int createdAtSort) {
@@ -93,7 +97,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product createProduct(Product product) {
+    public ProductResponse createProduct(Product product) {
         // Kiểm tra slug trùng
         if (productRepository.findBySlug(product.getSlug()).isPresent()) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Slug already exists: " + product.getSlug());
@@ -103,11 +107,20 @@ public class ProductServiceImpl implements ProductService{
         product.setUuid(UuidGenerator.generateCustomUuid());
         product.setCreatedAt(LocalDateTime.now());
         product.setUpdatedAt(LocalDateTime.now());
-        return productRepository.save(product);
+
+        productRepository.save(product);
+
+        if (product.getCategory_id() != null && !product.getCategory_id().isEmpty()) {
+            Manage<String> manage = new Manage<>();
+            manage.setCreated(Collections.singletonList(product.getUuid()));
+            productCategoryService.manageProductsForCategory(product.getCategory_id(), manage);
+        }
+
+        return convertProductToResponse(product);
     }
 
     @Override
-    public Product updateProduct(String uuid, Product product) {
+    public ProductResponse updateProduct(String uuid, Product product) {
         Product existingProduct = productRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Product not found with uuid: " + uuid));
 
@@ -115,6 +128,9 @@ public class ProductServiceImpl implements ProductService{
                 productRepository.findBySlug(product.getSlug()).isPresent()) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Slug already exists: " + product.getSlug());
         }
+        String oldCategoryId = existingProduct.getCategory_id();
+        String newCategoryId = product.getCategory_id();
+
         existingProduct.setTitle(product.getTitle());
         existingProduct.setDescription(product.getDescription());
         existingProduct.setThumbnail(product.getThumbnail());
@@ -126,7 +142,22 @@ public class ProductServiceImpl implements ProductService{
         existingProduct.setMetadata(product.getMetadata());
 
         existingProduct.setUpdatedAt(LocalDateTime.now());
-        return productRepository.save(existingProduct);
+
+        productRepository.save(existingProduct);
+
+        if (!Objects.equals(oldCategoryId, newCategoryId)) {
+            if (oldCategoryId != null && !oldCategoryId.isEmpty()) {
+                Manage<String> manage = new Manage<>();
+                manage.setDeleted(Collections.singletonList(uuid));
+                productCategoryService.manageProductsForCategory(oldCategoryId, manage);
+            }
+            if (newCategoryId != null && !newCategoryId.isEmpty()) {
+                Manage<String> manage = new Manage<>();
+                manage.setCreated(Collections.singletonList(uuid));
+                productCategoryService.manageProductsForCategory(newCategoryId, manage);
+            }
+        }
+        return convertProductToResponse(existingProduct);
     }
 
     @Override

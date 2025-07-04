@@ -1,6 +1,8 @@
 package dev.fitmart.FItMart.components.product.controller;
 
+import dev.fitmart.FItMart.common.model.Manage;
 import dev.fitmart.FItMart.common.model.Paginated;
+import dev.fitmart.FItMart.components.category.service.ProductCategoryService;
 import dev.fitmart.FItMart.components.product.mapping.*;
 import dev.fitmart.FItMart.components.product.model.Product;
 import dev.fitmart.FItMart.components.product.model.ProductOption;
@@ -76,7 +78,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<BaseResponse<ProductResponse>> createProduct(@Valid @RequestBody ProductRequest productRequest) {
         // Tạo sản phẩm
-        Product product = productService.createProduct(productRequest.getProduct());
+        ProductResponse product = productService.createProduct(productRequest.getProduct());
         String productId = product.getUuid();
 
         // Tạo options
@@ -152,17 +154,15 @@ public class ProductController {
         }
 
         // Chuyển đổi sang ProductResponse
-        ProductResponse response = productService.convertProductToResponse(product);
-        return ResponseUtils.success(response);
+//        ProductResponse response = productService.convertProductToResponse();
+        return ResponseUtils.success(product);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{uuid}")
     public ResponseEntity<BaseResponse<ProductResponse>> updateProduct(@PathVariable String uuid, @Valid @RequestBody ProductRequest productRequest) {
         // Cập nhật sản phẩm
-        System.out.println("==== Đã vào controller updateProduct ====");
-        System.out.println("Request Body: " + productRequest);
-        Product product = productService.updateProduct(uuid, productRequest.getProduct());
+        ProductResponse product = productService.updateProduct(uuid, productRequest.getProduct());
         String productId = product.getUuid();
 
         // Xử lý options
@@ -305,8 +305,8 @@ public class ProductController {
         }
 
         // Chuyển đổi sang ProductResponse
-        ProductResponse response = productService.convertProductToResponse(product);
-        return ResponseUtils.success(response);
+//        ProductResponse response = productService.convertProductToResponse(product);
+        return ResponseUtils.success(product);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
